@@ -1,18 +1,31 @@
 <template>
   <v-container>
-    <div class="display-2 text-xs-center mt-2 mb-3">Welcome to your INR App</div>
-    <v-data-table
-        :headers="headers"
-        :items="items"
-        hide-actions
-        class="elevation-1">
-        <template slot="items" slot-scope="data">
-          <td>{{ data.item.testDate }}</td>
-          <td>{{ data.item.dose }}</td>
-          <td>{{ data.item.suggestedDose }}</td>
-          <td>{{ data.item.comments }}</td>
-        </template>
-    </v-data-table>
+    <div class="display-1 text-xs-center mt-2 mb-3">Welcome to your INR App</div>
+
+    <v-tabs
+      v-model="activeTab">
+      <v-tab key="plans">Treatment Plans</v-tab>
+      <v-tab key="demo">Demographics</v-tab>
+      <v-tab key="manage">Patient Management</v-tab>
+      <v-tab key="options">Options</v-tab>
+      <v-tab key="help">Help</v-tab>
+      <v-tab-item key="plans">
+        <v-data-table
+            :headers="headers"
+            :items="items"
+            hide-actions
+            class="elevation-1 mt-3">
+            <template slot="items" slot-scope="data">
+              <td>{{ data.item.testDate }}</td>
+              <td>{{ data.item.inr }}</td>
+              <td>{{ data.item.dose }}</td>
+              <td>{{ data.item.reviewDays }}</td>
+              <td>{{ data.item.nextTestDate }}</td>
+              <td><a href='#'>Add Comment</a></td>
+            </template>
+        </v-data-table>
+      </v-tab-item>
+    </v-tabs>
   </v-container>
 </template>
 
@@ -21,9 +34,17 @@ export default {
   name: 'Page',
   data () {
     return { // Some mock data to fill the page
-      headers: [{text: 'Test Date', value: 'testDate'}, {text: 'Dose', value: 'dose'}, {text: 'Suggested Dose', value: 'suggestedDose'}, {text: 'Comments', sortable: false}],
-      items: [{testDate: '02-03-2018', dose: '13.5', suggestedDose: '13.5', comments: '123.... testing'},
-        {testDate: '12-03-2018', dose: '13.0', suggestedDose: '12.5', comments: 'second comment'}]
+      activeTab: null,
+      headers: [
+        {text: 'Test Date', value: 'testDate'},
+        {text: 'INR', value: 'inr'},
+        {text: 'Dose (mg/day)', value: 'dose'},
+        {text: 'Review Days', value: 'reviewDays'},
+        {text: 'Next Test Date', value: 'nextTestDate'},
+        {text: 'Comments', sortable: false}],
+      items: [
+        {testDate: '14-April-2017', inr: '2.2', dose: '2.3', reviewDays: 14, nextTestDate: '01-May-2017'},
+        {testDate: '01-May-2017', inr: '2.2', dose: '2.4', reviewDays: 21, nextTestDate: '14-May-2017'}]
     }
   }
 }
