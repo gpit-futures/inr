@@ -69,6 +69,21 @@
       <v-tab-item key="demo">
         <demographics />
       </v-tab-item>
+      <v-tab-item key="manage">
+        <div class="headline mt-3">
+          Manage...
+        </div>
+      </v-tab-item>
+      <v-tab-item key="options">
+        <div class="headline mt-3">
+          Options...
+        </div>
+      </v-tab-item>
+      <v-tab-item key="help">
+        <div class="headline mt-3">
+          Help...
+        </div>
+      </v-tab-item>
     </v-tabs>
   </v-container>
 </template>
