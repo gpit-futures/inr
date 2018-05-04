@@ -22,13 +22,15 @@
         <v-flex xs3 class="py-1">Review days</v-flex>
         <v-flex xs2 class="py-1">Next Test Date</v-flex>
       </v-layout>
-      <v-layout row v-for="row in items" :key="row.id" class="date-row text-xs-center">
-        <v-flex xs2 class="py-1">{{row.testDate}}</v-flex>
-        <v-flex xs2 class="py-1">{{row.inr}}</v-flex>
-        <v-flex xs3 class="py-1">{{row.dose}}</v-flex>
-        <v-flex xs3 class="py-1">{{row.reviewDays}}</v-flex>
-        <v-flex xs2 class="py-1">{{row.nextTestDate}}</v-flex>
-      </v-layout>
+      <transition-group name="tests">
+        <v-layout row v-for="row in items" :key="row.id" class="date-row text-xs-center">
+          <v-flex xs2 class="py-1">{{row.testDate}}</v-flex>
+          <v-flex xs2 class="py-1">{{row.inr}}</v-flex>
+          <v-flex xs3 class="py-1">{{row.dose}}</v-flex>
+          <v-flex xs3 class="py-1">{{row.reviewDays}}</v-flex>
+          <v-flex xs2 class="py-1">{{row.nextTestDate}}</v-flex>
+        </v-layout>
+      </transition-group>
       <v-layout row v-if="planSuggested">
         <div class="body-2 pt-2 pl-2">Suggested Treatment and Schedule Plan:</div>
       </v-layout>
@@ -45,7 +47,7 @@
     <v-layout row justify-space-between class="mt-3">
       <v-btn v-if="!planSuggested" color="primary" @click="addINR">Add New INR <v-icon right>playlist_add</v-icon></v-btn>
       <v-layout v-if="planSuggested" row justify-end>
-        <v-btn color="primary">Save<v-icon right>save</v-icon></v-btn>
+        <v-btn color="primary" @click="savePlan">Save<v-icon right>save</v-icon></v-btn>
         <v-btn>Refer</v-btn>
         <v-btn>Override</v-btn>
         <v-btn>Edit</v-btn>
@@ -68,18 +70,25 @@ export default {
       console.log('addINR')
       this.addingInr = true
     },
-    addedINR () {
+    addedINR (plan) {
       this.addingInr = false
       this.planSuggested = true
+      this.test = plan
     },
     cancelPlan () {
       this.planSuggested = false
+    },
+    savePlan () {
+      this.planSuggested = false
+      this.test.id = ++this.lastId
+      this.items.unshift(this.test)
     }
   },
   data () {
     return { // Some mock data to fill the page
       addingInr: false,
-      test: {id: 1, testDate: '14-April-2017', inr: '2.2', dose: '2.3', reviewDays: 14, nextTestDate: '01-May-2017'},
+      lastId: 2,
+      test: null, // {id: 3, testDate: '04-May-2017', inr: '2.2', dose: '2.3', reviewDays: 14, nextTestDate: '01-May-2017'},
       planSuggested: false,
       planDates: ['01-May-2017', '01-Jan-2016'],
       selectedPlanDate: '01-May-2017',
@@ -105,5 +114,8 @@ export default {
 
 .date-row {
   border-bottom: 1px solid lightGray;
+}
+.tests-move {
+  transition: transform .5s ease;
 }
 </style>

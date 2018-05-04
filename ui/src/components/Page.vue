@@ -10,33 +10,33 @@
          <v-flex xs4>
            <v-layout row justify-space-between>
              <b>Dr E. Taylor</b>
-             <span>26-April-2018</span>
+             <span>{{now}}</span>
            </v-layout>
          </v-flex>
       </v-layout>
       <v-layout row class="purple darken-1 white--text pl-2 pr-2 pt-3 pb-3 justify-space-between">
-        <span class="body-1">SMITH, John (Mr)</span>
+        <span class="body-1">{{patient.name.text}}</span>
         <div>
           <span class="caption">Born:</span>
-          <span class="body-1">01-Aug-1975 (43y)</span>
+          <span class="body-1">{{patient.birthDate}} ({{patientAge}}y)</span>
         </div>
         <div>
           <span class="caption">Gender:</span>
-          <span class="body-1">Male</span>
+          <span class="body-1">{{patient.gender}}</span>
         </div>
         <div>
           <span class="caption">NHS Number:</span>
-          <span class="body-1">111 999 0000</span>
+          <span class="body-1">{{patient.identifier}}</span>
         </div>
         <div>
           <span class="caption">GP Practice:</span>
-          <span class="body-1">AB0011</span>
+          <span class="body-1">{{patient.generalPractitioner.identifier}}</span>
         </div>
       </v-layout>
       <v-layout row class="pa-2" justify-space-between>
         <div>
           <span class="caption">Address:</span>
-          <span class="body-1">1 Kings Road, Leeds, LS11 5AA</span>
+          <span class="body-1">{{patient.address.text}}</span>
         </div>
         <div>
           <span class="caption">Diagnosis:</span>
@@ -91,13 +91,35 @@
 <script>
 import TreatmentPlans from './TreatmentPlans'
 import Demographics from './Demographics'
+import moment from 'moment-es6'
 
 export default {
   name: 'Page',
   components: {TreatmentPlans, Demographics},
   data () {
     return { // Some mock data to fill the page
-      activeTab: null
+      activeTab: null,
+      now: moment().format('DD-MMM-YYYY'),
+      patient: {
+        name: {
+          text: 'SMITH, John (Mr)'
+        },
+        birthDate: '01-Aug-1975',
+        gender: 'Male',
+        identifier: '111 999 0001',
+        generalPractitioner: {
+          identifier: 'AB0011'
+        },
+        address: {
+          text: '1 Kings Road, Leeds, LS11 5AA'
+        }
+      }
+    }
+  },
+  computed: {
+    patientAge () {
+      let dob = moment(this.patient.birthDate, 'DD-MMM-YYYY')
+      return moment().diff(dob, 'years')
     }
   }
 }
