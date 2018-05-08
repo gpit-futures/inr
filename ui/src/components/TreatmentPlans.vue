@@ -31,29 +31,38 @@
           <v-flex xs2 class="py-1">{{row.nextTestDate}}</v-flex>
         </v-layout>
       </transition-group>
-      <v-layout row v-if="planSuggested">
-        <div class="body-2 pt-2 pl-2">Suggested Treatment and Schedule Plan:</div>
-      </v-layout>
-      <v-layout row v-if="planSuggested" class="date-row text-xs-center">
-        <v-flex xs2 class="py-1">{{test.testDate}}</v-flex>
-        <v-flex xs2 class="py-1">{{test.inr}}</v-flex>
-        <v-flex xs3 class="py-1">{{test.dose}}</v-flex>
-        <v-flex xs3 class="py-1">{{test.reviewDays}}</v-flex>
-        <v-flex xs2 class="py-1">{{test.nextTestDate}}</v-flex>
-      </v-layout>
+
+      <transition name="fade">
+        <v-layout row v-if="planSuggested">
+          <div class="body-2 pt-2 pl-2 mt-3">Suggested Treatment and Schedule Plan:</div>
+        </v-layout>
+
+        <v-layout row v-if="planSuggested" class="date-row text-xs-center">
+          <v-flex xs2 class="py-1">{{test.testDate}}</v-flex>
+          <v-flex xs2 class="py-1">{{test.inr}}</v-flex>
+          <v-flex xs3 class="py-1">{{test.dose}}</v-flex>
+          <v-flex xs3 class="py-1">{{test.reviewDays}}</v-flex>
+          <v-flex xs2 class="py-1">{{test.nextTestDate}}</v-flex>
+        </v-layout>
+      </transition>
     </v-card>
 
-    <suggested-plan v-if="planSuggested" />
+    <transition name="fade">
+      <suggested-plan v-if="planSuggested" />
+    </transition>
     <v-layout row justify-space-between class="mt-3">
       <v-btn v-if="!planSuggested" color="primary" @click="addINR">Add New INR <v-icon right>playlist_add</v-icon></v-btn>
-      <v-layout v-if="planSuggested" row justify-end>
-        <v-btn color="primary" @click="savePlan">Save<v-icon right>save</v-icon></v-btn>
-        <v-btn>Refer</v-btn>
-        <v-btn>Override</v-btn>
-        <v-btn>Edit</v-btn>
-        <v-btn @click="cancelPlan">Cancel</v-btn>
-      </v-layout>
+      <transition name="fade">
+        <v-layout v-if="planSuggested" row justify-end>
+          <v-btn color="primary" @click="savePlan">Save<v-icon right>save</v-icon></v-btn>
+          <v-btn>Refer</v-btn>
+          <v-btn>Override</v-btn>
+          <v-btn>Edit</v-btn>
+          <v-btn @click="cancelPlan">Cancel</v-btn>
+        </v-layout>
+      </transition>
     </v-layout>
+
     <inr-dialog :show-modal="addingInr" @close="addingInr = false" @submit="addedINR" />
   </div>
 </template>
@@ -85,10 +94,10 @@ export default {
     }
   },
   data () {
-    return { // Some mock data to fill the page
+    return {
       addingInr: false,
       lastId: 2,
-      test: null, // {id: 3, testDate: '04-May-2017', inr: '2.2', dose: '2.3', reviewDays: 14, nextTestDate: '01-May-2017'},
+      test: null,
       planSuggested: false,
       planDates: ['01-May-2017', '01-Jan-2016'],
       selectedPlanDate: '01-May-2017',
@@ -117,5 +126,12 @@ export default {
 }
 .tests-move {
   transition: transform .5s ease;
+}
+
+.fade-enter-active, .fade-leave-active {
+  transition: opacity 0.3s;
+}
+.fade-enter, .fade-leave-to {
+  opacity: 0;
 }
 </style>

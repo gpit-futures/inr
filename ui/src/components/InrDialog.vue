@@ -2,61 +2,65 @@
   <v-dialog v-model="show" persistent max-width="520px">
     <v-card>
       <v-card-text>
-        <v-layout row align-baseline py-1>
-          <div class="caption mr-3">
-            Test Date
-          </div>
-          <v-menu lazy
-             :close-on-content-click="false"
-             transition="scale-transition"
-             v-model="testDateVisible"
-             attach>
-             <v-layout column slot="activator">
-               <v-text-field style="width: 120px; flex-basis: auto;" class="ml-1"
-                 v-model="testDate"
-                 hide-details
-                 readonly>
-               </v-text-field>
-             </v-layout>
-             <v-date-picker :value="testDateFmt" @input="selectedDate" locale="en-GB" scrollable attach>
-             </v-date-picker>
-          </v-menu>
-        </v-layout>
-        <v-layout row py-2>
-          <v-flex class="xs6">
-            <v-layout row align-baseline xjustify-start>
-              <div class="caption mr-3">
-                Select INR
-              </div>
+        <v-form ref="form" lazy-validation>
+          <v-layout row align-baseline>
+            <v-flex xs4>
+              <v-subheader>
+              Test Date
+              </v-subheader>
+            </v-flex>
+            <v-flex xs5>
+              <v-menu lazy
+                 :close-on-content-click="false"
+                 transition="scale-transition"
+                 v-model="testDateVisible"
+                 attach>
+                 <v-text-field slot="activator"
+                   v-model="testDate"
+                   readonly>
+                 </v-text-field>
+                 <v-date-picker :value="testDateFmt" @input="selectedDate" locale="en-GB" scrollable attach>
+                 </v-date-picker>
+              </v-menu>
+            </v-flex>
+          </v-layout>
+          <v-layout row>
+            <v-flex xs4>
+              <v-subheader>
+                New INR
+              </v-subheader>
+            </v-flex>
+            <v-flex xs5>
               <v-select
                 :items="inrValues"
                 v-model="inrValue"
                 single-line
-                hide-details
-                class="inr-select"
+                :rules="inrRules"
               ></v-select>
-            </v-layout>
-          </v-flex>
-          <v-flex class="xs6">
-            <v-layout row align-baseline xjustify-start>
-              <div class="caption mr-3">
-                Testing method:
-              </div>
+            </v-flex>
+          </v-layout>
+          <v-layout row>
+            <v-flex xs4>
+              <v-subheader>
+                Testing method
+              </v-subheader>
+            </v-flex>
+            <v-flex xs5>
               <v-select
                 :items="testingMethods"
                 v-model="testingMethod"
                 single-line
-                hide-details
-                class="testing-select"
+                :rules="testingRules"
               ></v-select>
-            </v-layout>
-          </v-flex>
-        </v-layout>
-        <v-text-field
-          name="input-1"
-          label="Comments"
-          textarea
-        ></v-text-field>
+            </v-flex>
+          </v-layout>
+
+          <v-text-field
+            name="input-1"
+            label="Comments"
+            textarea
+          ></v-text-field>
+        </v-form>
       </v-card-text>
       <v-card-actions>
         <v-layout row justify-end>
@@ -75,28 +79,30 @@ export default {
   name: 'inr-dialog',
   props: ['showModal'],
   data () {
-    let now = moment()
     return {
       show: this.showModal,
-      testDate: now.format('DD-MMM-YYYY'),
-      testDateFmt: now.format('YYYY-MM-DD'),
+      testDate: null,
+      testDateFmt: null,
       testDateVisible: false,
-      testingMethod: 'PoCT',
+      testingMethod: null,
       testingMethods: ['PoCT', 'Lab'],
-      inrValue: 1.9,
-      inrValues: [1.9, 2.0, 2.1, 2.2, 2.3, 2.4]
+      inrValue: null,
+      inrValues: [1.9, 2.0, 2.1, 2.2, 2.3, 2.4],
+      inrRules: [v => !!v || 'Please select the INR'],
+      testingRules: [v => !!v || 'Please select the testing method']
     }
   },
   methods: {
     submit () {
-      let record = {testDate: this.testDate, inr: this.inrValue, dose: '5', reviewDays: 14, nextTestDate: '01-Aug-2018'}
-      this.$emit('submit', record)
+      if (this.$refs.form.validate()) {
+        let record = {testDate: this.testDate, inr: this.inrValue, dose: '5', reviewDays: 14, nextTestDate: '01-Aug-2018'}
+        this.$emit('submit', record)
+      }
     },
     close () {
       this.$emit('close')
     },
     selectedDate (value) {
-      console.log('selectedDate', value)
       this.testDateFmt = value
       this.testDate = moment(value, 'YYYY-MM-DD').format('DD-MMM-YYYY')
       this.testDateVisible = false
@@ -105,16 +111,15 @@ export default {
   watch: {
     showModal (value) {
       this.show = value
+      if (value) {
+        this.$refs.form.reset()
+        let now = moment()
+        this.testDate = now.format('DD-MMM-YYYY')
+        this.testDateFmt = now.format('YYYY-MM-DD')
+        this.testingMethod = null
+        this.inrValue = null
+      }
     }
   }
 }
 </script>
-
-<style scoped>
-.inr-select {
-  max-width: 80px;
-}
-.testing-select {
-  max-width: 90px;
-}
-</style>

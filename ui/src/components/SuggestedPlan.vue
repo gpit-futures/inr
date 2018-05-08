@@ -41,7 +41,7 @@ export default {
 }
 </script>
 
-<style>
+<style scoped>
 .row:hover {
   background-color: #F3E5F5;
 }
