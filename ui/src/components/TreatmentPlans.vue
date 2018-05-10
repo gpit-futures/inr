@@ -76,7 +76,6 @@ export default {
   components: {InrDialog, SuggestedPlan},
   methods: {
     addINR () {
-      console.log('addINR')
       this.addingInr = true
     },
     addedINR (plan) {

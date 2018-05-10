@@ -4,11 +4,6 @@
       <v-card-text>
         <v-form ref="form" lazy-validation>
           <v-layout row align-baseline>
-            <v-flex xs4>
-              <v-subheader>
-              Test Date
-              </v-subheader>
-            </v-flex>
             <v-flex xs5>
               <v-menu lazy
                  :close-on-content-click="false"
@@ -17,6 +12,7 @@
                  attach>
                  <v-text-field slot="activator"
                    v-model="testDate"
+                   label="Test Date"
                    readonly>
                  </v-text-field>
                  <v-date-picker :value="testDateFmt" @input="selectedDate" locale="en-GB" scrollable attach>
@@ -25,31 +21,21 @@
             </v-flex>
           </v-layout>
           <v-layout row>
-            <v-flex xs4>
-              <v-subheader>
-                New INR
-              </v-subheader>
-            </v-flex>
             <v-flex xs5>
               <v-select
                 :items="inrValues"
                 v-model="inrValue"
-                single-line
+                label="New INR"
                 :rules="inrRules"
               ></v-select>
             </v-flex>
           </v-layout>
           <v-layout row>
-            <v-flex xs4>
-              <v-subheader>
-                Testing method
-              </v-subheader>
-            </v-flex>
             <v-flex xs5>
               <v-select
                 :items="testingMethods"
                 v-model="testingMethod"
-                single-line
+                label="Testing method"
                 :rules="testingRules"
               ></v-select>
             </v-flex>
@@ -59,6 +45,7 @@
             name="input-1"
             label="Comments"
             textarea
+            v-model="comments"
           ></v-text-field>
         </v-form>
       </v-card-text>
@@ -86,6 +73,7 @@ export default {
       testDateVisible: false,
       testingMethod: null,
       testingMethods: ['PoCT', 'Lab'],
+      comments: null,
       inrValue: null,
       inrValues: [1.9, 2.0, 2.1, 2.2, 2.3, 2.4],
       inrRules: [v => !!v || 'Please select the INR'],
@@ -118,6 +106,7 @@ export default {
         this.testDateFmt = now.format('YYYY-MM-DD')
         this.testingMethod = null
         this.inrValue = null
+        this.comments = null
       }
     }
   }
