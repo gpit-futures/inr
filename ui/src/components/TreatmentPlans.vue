@@ -14,7 +14,7 @@
       </v-layout>
     </v-card>
 
-    <v-card class="mb-3">
+    <v-card v-if="treatmentPlan" class="mb-3">
       <v-layout row class="purple darken-1 white--text text-xs-center">
         <v-flex xs2 class="py-1">Test Date</v-flex>
         <v-flex xs2 class="py-1">INR</v-flex>
@@ -23,7 +23,7 @@
         <v-flex xs2 class="py-1">Next Test Date</v-flex>
       </v-layout>
       <transition-group name="tests">
-        <v-layout row v-for="row in items" :key="row.id" class="date-row text-xs-center">
+        <v-layout row v-for="row in treatmentPlan.items" :key="row.id" class="date-row text-xs-center">
           <v-flex xs2 class="py-1">{{row.testDate}}</v-flex>
           <v-flex xs2 class="py-1">{{row.inr}}</v-flex>
           <v-flex xs3 class="py-1">{{row.dose}}</v-flex>
@@ -33,17 +33,19 @@
       </transition-group>
 
       <transition name="fade">
-        <v-layout row v-if="planSuggested">
-          <div class="body-2 pt-2 pl-2 mt-3">Suggested Treatment and Schedule Plan:</div>
-        </v-layout>
+        <div v-if="planSuggested">
+          <v-layout row>
+            <div class="body-2 pt-2 pl-2 mt-3">Suggested Treatment and Schedule Plan:</div>
+          </v-layout>
 
-        <v-layout row v-if="planSuggested" class="date-row text-xs-center">
-          <v-flex xs2 class="py-1">{{test.testDate}}</v-flex>
-          <v-flex xs2 class="py-1">{{test.inr}}</v-flex>
-          <v-flex xs3 class="py-1">{{test.dose}}</v-flex>
-          <v-flex xs3 class="py-1">{{test.reviewDays}}</v-flex>
-          <v-flex xs2 class="py-1">{{test.nextTestDate}}</v-flex>
-        </v-layout>
+          <v-layout row class="date-row text-xs-center">
+            <v-flex xs2 class="py-1">{{test.testDate}}</v-flex>
+            <v-flex xs2 class="py-1">{{test.inr}}</v-flex>
+            <v-flex xs3 class="py-1">{{test.dose}}</v-flex>
+            <v-flex xs3 class="py-1">{{test.reviewDays}}</v-flex>
+            <v-flex xs2 class="py-1">{{test.nextTestDate}}</v-flex>
+          </v-layout>
+        </div>
       </transition>
     </v-card>
 
@@ -70,6 +72,8 @@
 <script>
 import InrDialog from './InrDialog'
 import SuggestedPlan from './SuggestedPlan'
+import { mapState } from 'vuex'
+import mutators from '../store/mutators'
 
 export default {
   name: 'treatment-plans',
@@ -79,6 +83,7 @@ export default {
       this.addingInr = true
     },
     addedINR (plan) {
+      console.log(plan)
       this.addingInr = false
       this.planSuggested = true
       this.test = plan
@@ -89,7 +94,7 @@ export default {
     savePlan () {
       this.planSuggested = false
       this.test.id = ++this.lastId
-      this.items.unshift(this.test)
+      this.$store.commit(mutators.ADD_TEST_TO_PLAN, this.test)
     }
   },
   data () {
@@ -98,7 +103,7 @@ export default {
       lastId: 2,
       test: null,
       planSuggested: false,
-      planDates: ['01-May-2017', '01-Jan-2016'],
+      planDates: ['01-May-2017'],
       selectedPlanDate: '01-May-2017',
       headers: [
         {text: 'Test Date', value: 'testDate'},
@@ -106,11 +111,13 @@ export default {
         {text: 'Dose (mg/day)', value: 'dose'},
         {text: 'Review Days', value: 'reviewDays'},
         {text: 'Next Test Date', value: 'nextTestDate'},
-        {text: 'Comments', sortable: false}],
-      items: [
-        {id: 1, testDate: '14-April-2017', inr: '2.2', dose: '2.3', reviewDays: 14, nextTestDate: '01-May-2017'},
-        {id: 2, testDate: '01-May-2017', inr: '2.2', dose: '2.4', reviewDays: 21, nextTestDate: '14-May-2017'}]
+        {text: 'Comments', sortable: false}]
     }
+  },
+  computed: {
+    ...mapState({
+      treatmentPlan: state => state.treatmentPlan
+    })
   }
 }
 </script>

@@ -1,9 +1,13 @@
 <template>
-  <v-container>
+    <div>
     <v-form ref="planForm" lazy-validation>
       <v-layout row class="mt-3">
-        <v-flex xs6>
+        <v-flex xs12>
           <div class="body-1">To add a new treatment plan for this patient enter the details in the form below.</div>
+        </v-flex>
+      </v-layout>
+      <v-layout row>
+        <v-flex xs6>
           <div class="title mt-3 mb-2">Treatment Plan</div>
           <v-menu lazy
              :close-on-content-click="false"
@@ -48,7 +52,7 @@
              :items="inrs"
              v-model="targetINR"
              label="Target INR"
-             :rules="requiredRules" /></v-select>
+             :rules="requiredRules"></v-select>
            <v-select
              :items="dosingMethods"
              v-model="dosingMethod"
@@ -65,11 +69,12 @@
         </v-flex>
       </v-layout>
     </v-form>
-  </v-container>
+  </div>
 </template>
 
 <script>
 import moment from 'moment-es6'
+import mutators from '../store/mutators'
 
 export default {
   name: 'new-treatment-plan',
@@ -105,10 +110,8 @@ export default {
       this.treatmentDurationList = []
     },
     changedDrug () {
-      console.log('-changedDrug')
       this.treatmentDuration = null
       this.treatmentDurationList = ['indefinite', '6 months']
-      console.log('---changedDrug')
     },
     changedDuration () {
       this.showWarfarin = true
@@ -116,6 +119,16 @@ export default {
     savePlan () {
       if (this.$refs.warfarinForm.validate()) {
         console.log('Save')
+        let treatmentPlan = {
+          planDate: this.planStartDate,
+          diagnosis: this.diagnosis,
+          drug: this.drug,
+          targetINR: this.targetINR,
+          dosingMethod: this.dosingMethod,
+          testingMethod: this.testingMethod,
+          items: []
+        }
+        this.$store.commit(mutators.SET_TREATMENT_PLAN, treatmentPlan)
       }
     }
   }

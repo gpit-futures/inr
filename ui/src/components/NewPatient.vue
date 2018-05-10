@@ -5,11 +5,11 @@
       <v-tab key="test-due">Test Due</v-tab>
       <v-tab key="results">Results</v-tab>
       <v-tab-item key="add-patient">
-        <v-form ref="form" lazy-validation>
+        <v-form ref="form" v-if="patientContext" lazy-validation>
           <v-layout row class="mt-3">
             <v-flex xs6 class="pr-3">
               <div class="title">Demographics</div>
-              <v-text-field v-model="patientNumber" label="Patient Number" :rules="requiredRules"/>
+              <v-text-field v-model="identifier" label="Patient Number" :rules="requiredRules"/>
               <v-text-field v-model="nhsNumber" label="NHS Number" :rules="requiredRules"/>
               <v-select
                 :items="titles"
@@ -48,7 +48,7 @@
               <v-select
                 :items="ethnicities"
                 v-model="patientEthicity"
-                label="Gender"
+                label="Ethnicity"
                 :rules="requiredRules"></v-select>
               <v-select
                 :items="languages"
@@ -64,8 +64,8 @@
             <v-flex xs6 class="pl-3">
               <div class="title">Contact</div>
               <v-text-field v-model="contactAddress1" label="Address Line 1" :rules="requiredRules" />
-              <v-text-field v-model="contactAddress2" label="Address Line 1" :rules="requiredRules" />
-              <v-text-field v-model="contactAddress3" label="Address Line 1" :rules="requiredRules" />
+              <v-text-field v-model="contactAddress2" label="Address Line 2" />
+              <v-text-field v-model="contactAddress3" label="Address Line 3" />
               <v-text-field v-model="contactTown" label="Town / City" :rules="requiredRules" />
               <v-select
                 :items="counties"
@@ -73,9 +73,9 @@
                 label="County"
                 :rules="requiredRules"></v-select>
               <v-text-field v-model="contactPostcode" label="Postcode" :rules="requiredRules" />
-              <v-text-field v-model="contactTelephone" label="Home Tel" :rules="requiredRules" />
-              <v-text-field v-model="contactMobile" label="Mobile" :rules="requiredRules" />
-              <v-text-field v-model="contactEmail" label="Email" :rules="requiredRules" />
+              <v-text-field v-model="contactTelephone" label="Home Tel" />
+              <v-text-field v-model="contactMobile" label="Mobile" />
+              <v-text-field v-model="contactEmail" label="Email" />
             </v-flex>
           </v-layout>
         </v-form>
@@ -89,6 +89,8 @@
 
 <script>
 import moment from 'moment-es6'
+import { mapState } from 'vuex'
+import mutators from '../store/mutators'
 
 export default {
   name: 'new-patient',
@@ -102,29 +104,34 @@ export default {
       ethnicities: ['White', 'Mixed', 'Asian or Asian British', 'Black or Black British', 'Other Ethnic Group'],
       languages: ['English', 'Catalan', 'Gujarati', 'Hindi', 'Polish'],
       maritalStatuses: ['Single', 'Married', 'Divorced', 'Not Disclosed'],
-      patientNumber: null,
-      nhsNumber: null,
-      patientTitle: null,
-      patientLastName: null,
-      patientFirstName: null,
-      patientDOB: null,
+      identifier: '123 456 789',
+      nhsNumber: '78901234',
+      patientTitle: 'Miss',
+      patientLastName: 'Smith',
+      patientFirstName: 'Jane',
+      patientDOB: '01-Jan-1980',
       patientDOBVisible: false,
-      patientSex: null,
-      patientGender: null,
-      patientEthicity: null,
-      patientLanguage: null,
-      patientMaritalStatus: null,
-      contactAddress1: null,
+      patientSex: 'Female',
+      patientGender: 'Female',
+      patientEthicity: 'White',
+      patientLanguage: 'English',
+      patientMaritalStatus: 'Divorced',
+      contactAddress1: '4 Tile Terrace',
       contactAddress2: null,
       contactAddress3: null,
-      contactTown: null,
-      contactCounty: null,
-      contactPostcode: null,
+      contactTown: 'Brighouse',
+      contactCounty: 'West Yorkshire',
+      contactPostcode: 'Hd9 9FX',
       contactTelephone: null,
       contactMobile: null,
-      contactEmail: null,
+      contactEmail: 'jane23.smith45@gmail.com',
       requiredRules: [v => !!v || 'Required value']
     }
+  },
+  computed: {
+    ...mapState({
+      patientContext: state => state.patientContext
+    })
   },
   methods: {
     selectedDOB (value) {
@@ -134,6 +141,35 @@ export default {
     save () {
       if (this.$refs.form.validate()) {
         console.log('save')
+        let lastName = this.patientLastName.toUpperCase()
+        let addressLines = []
+        if (this.contactAddress1) {
+          addressLines.push(this.contactAddress1)
+        }
+        if (this.contactAddress2) {
+          addressLines.push(this.contactAddress2)
+        }
+        if (this.contactAddress3) {
+          addressLines.push(this.contactAddress3)
+        }
+        let patient = {
+          name: {
+            text: `${lastName}, ${this.patientFirstName} (${this.patientTitle})`
+          },
+          birthDate: this.patientDOB,
+          gender: this.patientGender,
+          identifier: this.identifier,
+          nhsNumber: this.nhsNumber,
+          generalPractitioner: {
+            identifier: 'AB0011'
+          },
+          address: {
+            line: addressLines,
+            city: this.contactTown,
+            postalCode: this.contactPostcode
+          }
+        }
+        this.$store.commit(mutators.SET_PATIENT, patient)
       }
     }
   }
