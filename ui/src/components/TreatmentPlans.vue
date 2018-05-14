@@ -14,55 +14,14 @@
       </v-layout>
     </v-card>
 
-    <v-card v-if="treatmentPlan" class="mb-3">
-      <v-layout row class="purple darken-1 white--text text-xs-center">
-        <v-flex xs2 class="py-1">Test Date</v-flex>
-        <v-flex xs2 class="py-1">INR</v-flex>
-        <v-flex xs3 class="py-1">Dose (mg/day)</v-flex>
-        <v-flex xs3 class="py-1">Review days</v-flex>
-        <v-flex xs2 class="py-1">Next Test Date</v-flex>
-      </v-layout>
-      <transition-group name="tests">
-        <v-layout row v-for="row in treatmentPlan.items" :key="row.id" class="date-row text-xs-center">
-          <v-flex xs2 class="py-1">{{row.testDate}}</v-flex>
-          <v-flex xs2 class="py-1">{{row.inr}}</v-flex>
-          <v-flex xs3 class="py-1">{{row.dose}}</v-flex>
-          <v-flex xs3 class="py-1">{{row.reviewDays}}</v-flex>
-          <v-flex xs2 class="py-1">{{row.nextTestDate}}</v-flex>
-        </v-layout>
-      </transition-group>
+    <treatment-plan-table v-if="!addingHistorical" :plan="treatmentPlan" :test="test" :planSuggested="planSuggested"
+        @save="savePlan" @cancel="cancelPlan" />
 
-      <transition name="fade">
-        <div v-if="planSuggested">
-          <v-layout row>
-            <div class="body-2 pt-2 pl-2 mt-3">Suggested Treatment and Schedule Plan:</div>
-          </v-layout>
+    <historical v-if="addingHistorical" :plan="treatmentPlan" @add-historical="addHistoricalRecord" @cancel-historical="cancelHistorical"/>
 
-          <v-layout row class="date-row text-xs-center">
-            <v-flex xs2 class="py-1">{{test.testDate}}</v-flex>
-            <v-flex xs2 class="py-1">{{test.inr}}</v-flex>
-            <v-flex xs3 class="py-1">{{test.dose}}</v-flex>
-            <v-flex xs3 class="py-1">{{test.reviewDays}}</v-flex>
-            <v-flex xs2 class="py-1">{{test.nextTestDate}}</v-flex>
-          </v-layout>
-        </div>
-      </transition>
-    </v-card>
-
-    <transition name="fade">
-      <suggested-plan v-if="planSuggested" />
-    </transition>
-    <v-layout row justify-space-between class="mt-3">
-      <v-btn v-if="!planSuggested" color="primary" @click="addINR">Add New INR <v-icon right>playlist_add</v-icon></v-btn>
-      <transition name="fade">
-        <v-layout v-if="planSuggested" row justify-end>
-          <v-btn color="primary" @click="savePlan">Save<v-icon right>save</v-icon></v-btn>
-          <v-btn>Refer</v-btn>
-          <v-btn>Override</v-btn>
-          <v-btn>Edit</v-btn>
-          <v-btn @click="cancelPlan">Cancel</v-btn>
-        </v-layout>
-      </transition>
+    <v-layout v-if="showButtons" row class="mt-3">
+      <v-btn color="primary" @click="addINR">Add New INR <v-icon right>playlist_add</v-icon></v-btn>
+      <v-btn color="primary" @click="addHistorical">Add Historical <v-icon right>history</v-icon></v-btn>
     </v-layout>
 
     <inr-dialog :show-modal="addingInr" @close="addingInr = false" @submit="addedINR" />
@@ -71,16 +30,28 @@
 
 <script>
 import InrDialog from './InrDialog'
-import SuggestedPlan from './SuggestedPlan'
+import TreatmentPlanTable from './TreatmentPlanTable'
+import Historical from './Historical'
 import { mapState } from 'vuex'
 import mutators from '../store/mutators'
 
 export default {
   name: 'treatment-plans',
-  components: {InrDialog, SuggestedPlan},
+  components: {InrDialog, TreatmentPlanTable, Historical},
   methods: {
     addINR () {
       this.addingInr = true
+    },
+    addHistorical () {
+      this.addingHistorical = true
+    },
+    addHistoricalRecord (record) {
+      record.id = ++this.lastId
+      this.$store.commit(mutators.ADD_TEST_TO_PLAN, record)
+      this.addingHistorical = false
+    },
+    cancelHistorical () {
+      this.addingHistorical = false
     },
     addedINR (plan) {
       console.log(plan)
@@ -100,24 +71,21 @@ export default {
   data () {
     return {
       addingInr: false,
+      addingHistorical: false,
       lastId: 2,
       test: null,
       planSuggested: false,
       planDates: ['01-May-2017'],
-      selectedPlanDate: '01-May-2017',
-      headers: [
-        {text: 'Test Date', value: 'testDate'},
-        {text: 'INR', value: 'inr'},
-        {text: 'Dose (mg/day)', value: 'dose'},
-        {text: 'Review Days', value: 'reviewDays'},
-        {text: 'Next Test Date', value: 'nextTestDate'},
-        {text: 'Comments', sortable: false}]
+      selectedPlanDate: '01-May-2017'
     }
   },
   computed: {
     ...mapState({
       treatmentPlan: state => state.treatmentPlan
-    })
+    }),
+    showButtons () {
+      return (!this.planSuggested) && (!this.addingHistorical)
+    }
   }
 }
 </script>
@@ -129,9 +97,6 @@ export default {
 
 .date-row {
   border-bottom: 1px solid lightGray;
-}
-.tests-move {
-  transition: transform .5s ease;
 }
 
 .fade-enter-active, .fade-leave-active {

@@ -75,12 +75,12 @@ export default {
       planDate: '14-Apr-2017',
       diagnosis: 'Atrial fibrillation',
       drug: 'Warfarin',
-      targetINR: '1.8',
+      targetINR: '2.0',
       dosingMethod: 'Manual Dosing',
       testingMethod: 'PoCT',
-      items: [
+      items: [ /*
         {id: 2, testDate: '01-May-2017', inr: '2.2', dose: '2.4', reviewDays: 21, nextTestDate: '14-May-2017'},
-        {id: 1, testDate: '14-April-2017', inr: '2.2', dose: '2.3', reviewDays: 14, nextTestDate: '01-May-2017'}]
+        {id: 1, testDate: '14-April-2017', inr: '2.2', dose: '2.3', reviewDays: 14, nextTestDate: '01-May-2017'} */ ]
     }
 
     this.$store.commit(mutators.SET_PATIENT_CONTEXT, patient)

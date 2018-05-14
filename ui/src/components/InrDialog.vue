@@ -83,7 +83,9 @@ export default {
   methods: {
     submit () {
       if (this.$refs.form.validate()) {
-        let record = {testDate: this.testDate, inr: this.inrValue, dose: '5', reviewDays: 14, nextTestDate: '01-Aug-2018'}
+        let reviewDays = 14
+        let nextTestDate = moment(this.testDate, 'DD-MMM-YYYY').add(reviewDays, 'days').format('DD-MMM-YYYY')
+        let record = {testDate: this.testDate, inr: this.inrValue, dose: '5', reviewDays: 14, nextTestDate}
         this.$emit('submit', record)
       }
     },

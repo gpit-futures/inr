@@ -52,7 +52,7 @@
         </div>
         <div>
           <span class="caption">Date:</span>
-          <span class="body-1">Indefinite</span>
+          <span class="body-1">{{treatmentPlan.treatmentDuration}}</span>
         </div>
       </template>
     </v-layout>

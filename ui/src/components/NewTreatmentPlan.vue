@@ -126,6 +126,7 @@ export default {
           targetINR: this.targetINR,
           dosingMethod: this.dosingMethod,
           testingMethod: this.testingMethod,
+          treatmentDuration: this.treatmentDuration,
           items: []
         }
         this.$store.commit(mutators.SET_TREATMENT_PLAN, treatmentPlan)
