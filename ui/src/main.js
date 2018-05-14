@@ -5,10 +5,13 @@ import Vuetify from 'vuetify'
 import 'vuetify/dist/vuetify.min.css'
 import 'material-design-icons-iconfont/dist/material-design-icons.css'
 import store from './store/store'
+import { DwClientConnector } from 'dw-client-connector'
 
 Vue.config.productionTip = false
 Vue.use(Vuetify)
 Vue.use(Vuex)
+
+DwClientConnector.init('http://localhost:3010', 'http://localhost:3000')
 
 /* eslint-disable no-new */
 new Vue({

@@ -122,7 +122,6 @@ export default {
         let historical = {
           testDate: this.date, inr: this.inrValue, dose: this.dose, reviewDays: this.reviewPeriod, nextTestDate
         }
-        console.log(this.inrValue, this.reviewPeriod, historical)
         this.$emit('add-historical', historical)
       }
     },

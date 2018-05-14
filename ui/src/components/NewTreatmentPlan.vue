@@ -118,7 +118,6 @@ export default {
     },
     savePlan () {
       if (this.$refs.warfarinForm.validate()) {
-        console.log('Save')
         let treatmentPlan = {
           planDate: this.planStartDate,
           diagnosis: this.diagnosis,

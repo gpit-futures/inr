@@ -78,9 +78,7 @@ export default {
       targetINR: '2.0',
       dosingMethod: 'Manual Dosing',
       testingMethod: 'PoCT',
-      items: [ /*
-        {id: 2, testDate: '01-May-2017', inr: '2.2', dose: '2.4', reviewDays: 21, nextTestDate: '14-May-2017'},
-        {id: 1, testDate: '14-April-2017', inr: '2.2', dose: '2.3', reviewDays: 14, nextTestDate: '01-May-2017'} */ ]
+      items: []
     }
 
     this.$store.commit(mutators.SET_PATIENT_CONTEXT, patient)
