@@ -11,7 +11,7 @@ Vue.config.productionTip = false
 Vue.use(Vuetify)
 Vue.use(Vuex)
 
-DwClientConnector.init('http://localhost:3010', 'http://localhost:3000')
+DwClientConnector.init(window.location.origin, 'http://localhost:3000')
 
 /* eslint-disable no-new */
 new Vue({

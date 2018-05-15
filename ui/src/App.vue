@@ -19,6 +19,7 @@ import NewPatient from './components/NewPatient'
 import NewTreatmentPlan from './components/NewTreatmentPlan'
 import mutators from './store/mutators'
 import { mapState } from 'vuex'
+import { DwClientConnector } from 'dw-client-connector'
 
 export default {
   name: 'App',
@@ -88,6 +89,14 @@ export default {
     if (mode > 2) {
       this.$store.commit(mutators.SET_TREATMENT_PLAN, treatmentPlan)
     }
+
+    DwClientConnector.subscribe('patient-context:changed', (data) => {
+      // set patient here
+    })
+
+    DwClientConnector.subscribe('patient-context:ended', () => {
+      // reset patient here and navigate to
+    })
   }
 }
 </script>
