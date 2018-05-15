@@ -37,9 +37,13 @@ export default {
   name: 'page',
   components: {TreatmentPlans, Demographics},
   data () {
+    console.log('..page')
     return { // Some mock data to fill the page
       activeTab: null
     }
+  },
+  mounted () {
+    console.log('m.... page')
   }
 }
 </script>

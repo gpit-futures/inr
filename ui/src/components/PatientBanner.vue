@@ -6,18 +6,18 @@
        <v-flex xs4 class="headline text-xs-center">
          INR Module
        </v-flex>
-       <v-flex xs4>
+       <v-flex xs4 v-if="patientContext">
          <v-layout row justify-space-between>
-           <b>Dr E. Taylor</b>
+           <b>{{patientContext.gp.name}}</b>
            <span>{{now}}</span>
          </v-layout>
        </v-flex>
     </v-layout>
     <v-layout v-if="patient" row class="purple darken-1 white--text pl-2 pr-2 pt-3 pb-3 justify-space-between">
-      <span class="body-1">{{patient.name.text}}</span>
+      <span class="body-1">{{patientName}}</span>
       <div>
         <span class="caption">Born:</span>
-        <span class="body-1">{{patient.birthDate}} ({{patientAge}}y)</span>
+        <span class="body-1">{{patient.dateOfBirth | date}} ({{patientAge}}y)</span>
       </div>
       <div>
         <span class="caption">Gender:</span>
@@ -25,11 +25,11 @@
       </div>
       <div>
         <span class="caption">NHS Number:</span>
-        <span class="body-1">{{patient.identifier}}</span>
+        <span class="body-1">{{patient.nhsNumber}}</span>
       </div>
       <div>
         <span class="caption">GP Practice:</span>
-        <span class="body-1">{{patient.generalPractitioner.identifier}}</span>
+        <span class="body-1">{{patientContext.gp.address.line1}}</span>
       </div>
     </v-layout>
     <v-layout v-if="patient" row class="pa-2" justify-space-between>
@@ -73,15 +73,33 @@ export default {
   computed: {
     ...mapState({
       patient: state => state.patient,
+      patientContext: state => state.patientContext,
       treatmentPlan: state => state.treatmentPlan
     }),
     patientAge () {
-      let dob = moment(this.patient.birthDate, 'DD-MMM-YYYY')
+      let dob = moment(this.patient.dateOfBirth)
       return moment().diff(dob, 'years')
     },
+    patientName () {
+      let lastName = this.patient.lastName.toUpperCase()
+      return `${lastName}, ${this.patient.firstName}. (${this.patient.title})`
+    },
     address () {
-      let lines = this.patient.address.line.join(',')
-      return `${lines}, ${this.patient.address.city}, ${this.patient.address.postalCode}`
+      let address = this.patient.address
+      let fields = ['line1', 'line2', 'line3', 'line4', 'postcode']
+      let addrArray = []
+      for (let i = 0; i < fields.length; i++) {
+        let value = address[fields[i]]
+        if (value) {
+          addrArray.push(value)
+        }
+      }
+      return addrArray.join(', ') // todo
+    }
+  },
+  filters: {
+    date (value) {
+      return moment(value).format('DD-MMM-YYYY')
     }
   }
 }

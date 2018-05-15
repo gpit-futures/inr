@@ -3,8 +3,7 @@
     <v-content>
       <v-container>
         <patient-banner />
-
-        <new-patient v-if="!patientExists" />
+        <new-patient v-if="patientNotExist"/>
         <page v-if="patientWithPlan" />
         <new-treatment-plan v-if="patientWithNoPlan" />
       </v-container>
@@ -34,10 +33,18 @@ export default {
   computed: {
     ...mapState({
       patient: state => state.patient,
+      patientContext: state => state.patientContext,
       treatmentPlan: state => state.treatmentPlan
     }),
     patientExists () {
       return (this.patient !== null)
+    },
+    patientNotExist () { // No patient but a patientcontext
+      console.log('aa', this.patient === null, this.patientContext !== null)
+      if (this.patientContext) {
+        console.log('title ', this.patientContext.title)
+      }
+      return (this.patient === null) && (this.patientContext !== null)
     },
     patientWithNoPlan () {
       return (this.patient !== null) && (this.treatmentPlan == null)
@@ -54,21 +61,31 @@ export default {
     */
 
     let mode = window.location.pathname.length
-    let patient = {
-      name: {
-        text: 'SMITH, John (Mr)'
+    let patient = {'id': '267e175a-57fe-4b8a-a672-15012d83ed9e',
+      'title': 'Mr',
+      'firstName': 'Ivor',
+      'lastName': 'Cox',
+      'gender': 'Male',
+      'phone': '(011981) 32362',
+      'pasNumber': '352541',
+      'nhsNumber': '9999999000',
+      'dateOfBirth': '1944-07-05T23:00:00Z',
+      'address': {
+        'line1': '6948 Et St.',
+        'line2': 'Halesowen',
+        'line3': 'Worcestershire',
+        'line4': null,
+        'postcode': 'VX27 5DV'
       },
-      birthDate: '01-Aug-1975',
-      gender: 'Male',
-      identifier: '111 999 0001',
-      nhsNumber: '123456',
-      generalPractitioner: {
-        identifier: 'AB0011'
-      },
-      address: {
-        line: ['1 Kings Road', 'Hunslet'],
-        city: 'Leeds',
-        postalCode: 'LS11 5AA'
+      'gp': {
+        'name': 'Goff Carolyn D.',
+        'address': {
+          'line1': 'Hamilton Practice',
+          'line2': '5544 Ante Street',
+          'line3': 'Hamilton',
+          'line4': 'Lanarkshire',
+          'postcode': 'N06 5LP'
+        }
       }
     }
 
@@ -82,13 +99,17 @@ export default {
       items: []
     }
 
-    this.$store.commit(mutators.SET_PATIENT_CONTEXT, patient)
-    if (mode > 1) {
-      this.$store.commit(mutators.SET_PATIENT, patient)
-    }
-    if (mode > 2) {
-      this.$store.commit(mutators.SET_TREATMENT_PLAN, treatmentPlan)
-    }
+    setTimeout(() => {
+      console.log(this)
+      this.$store.commit(mutators.SET_PATIENT_CONTEXT, patient)
+      if (mode > 1) {
+        this.$store.commit(mutators.SET_PATIENT, patient)
+      }
+      if (mode > 2) {
+        this.$store.commit(mutators.SET_TREATMENT_PLAN, treatmentPlan)
+      }
+      console.log('stored')
+    }, 400)
 
     DwClientConnector.subscribe('patient-context:changed', (data) => {
       // set patient here

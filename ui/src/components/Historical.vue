@@ -102,7 +102,7 @@ export default {
       omit: null,
       reviewPeriod: null,
       targetInr: this.plan.targetINR,
-      inrValues: ['1.9', '2.0', '2.1', '2.2', '2.3', '2.4'],
+      inrValues: ['1.8', '1.9', '2.0', '2.1', '2.2', '2.3', '2.4'],
       doses: [1.0, 2.0, 3.0, 4.0, 5.0, 6.0],
       omits: ['Not Known'].concat(makeDays(6)),
       reviewPeriods: makeDays(30),
