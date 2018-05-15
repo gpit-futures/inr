@@ -54,7 +54,6 @@ export default {
       this.addingHistorical = false
     },
     addedINR (plan) {
-      console.log(plan)
       this.addingInr = false
       this.planSuggested = true
       this.test = plan

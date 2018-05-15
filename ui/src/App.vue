@@ -40,10 +40,6 @@ export default {
       return (this.patient !== null)
     },
     patientNotExist () { // No patient but a patientcontext
-      console.log('aa', this.patient === null, this.patientContext !== null)
-      if (this.patientContext) {
-        console.log('title ', this.patientContext.title)
-      }
       return (this.patient === null) && (this.patientContext !== null)
     },
     patientWithNoPlan () {
@@ -99,17 +95,13 @@ export default {
       items: []
     }
 
-    setTimeout(() => {
-      console.log(this)
-      this.$store.commit(mutators.SET_PATIENT_CONTEXT, patient)
-      if (mode > 1) {
-        this.$store.commit(mutators.SET_PATIENT, patient)
-      }
-      if (mode > 2) {
-        this.$store.commit(mutators.SET_TREATMENT_PLAN, treatmentPlan)
-      }
-      console.log('stored')
-    }, 400)
+    this.$store.commit(mutators.SET_PATIENT_CONTEXT, patient)
+    if (mode > 1) {
+      this.$store.commit(mutators.SET_PATIENT, patient)
+    }
+    if (mode > 2) {
+      this.$store.commit(mutators.SET_TREATMENT_PLAN, treatmentPlan)
+    }
 
     DwClientConnector.subscribe('patient-context:changed', (data) => {
       // set patient here

@@ -141,7 +141,6 @@ export default {
     },
     save () {
       if (this.$refs.form.validate()) {
-        console.log(this.patientDOB)
         let patient = {
           title: this.patientTitle,
           firstName: this.patientFirstName,
