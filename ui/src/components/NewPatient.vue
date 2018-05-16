@@ -159,25 +159,38 @@ export default {
           }
         }
         this.$store.commit(mutators.SET_PATIENT, patient)
+        this.$router.push({name: 'NewPlan'})
+      }
+    },
+    copyContextFields () {
+      if (this.patientContext) {
+        this.patientTitle = this.patientContext.title
+        this.patientLastName = this.patientContext.lastName
+        this.patientFirstName = this.patientContext.firstName
+        this.patientGender = this.patientContext.gender
+        this.patientSex = this.patientContext.gender // ?? no field
+        this.contactTelephone = this.patientContext.phone
+        this.identifier = this.patientContext.pasNumber
+        this.nhsNumber = this.patientContext.nhsNumber
+        this.patientDOB = moment(this.patientContext.dateOfBirth).format('DD-MMM-YYYY')
+        this.patientDOBpicker = moment(this.patientContext.dateOfBirth).format('YYYY-MM-DD')
+        this.contactAddress1 = this.patientContext.address.line1
+        this.contactAddress2 = this.patientContext.address.line2
+        this.contactAddress3 = this.patientContext.address.line3
+        this.contactTown = this.patientContext.address.line4
+        this.contactPostcode = this.patientContext.address.postcode
       }
     }
   },
+  watch: {
+    patientContext (value) {
+      this.copyContextFields()
+    }
+  },
   mounted () {
-    this.patientTitle = this.patientContext.title
-    this.patientLastName = this.patientContext.lastName
-    this.patientFirstName = this.patientContext.firstName
-    this.patientGender = this.patientContext.gender
-    this.patientSex = this.patientContext.gender // ?? no field
-    this.contactTelephone = this.patientContext.phone
-    this.identifier = this.patientContext.pasNumber
-    this.nhsNumber = this.patientContext.nhsNumber
-    this.patientDOB = moment(this.patientContext.dateOfBirth).format('DD-MMM-YYYY')
-    this.patientDOBpicker = moment(this.patientContext.dateOfBirth).format('YYYY-MM-DD')
-    this.contactAddress1 = this.patientContext.address.line1
-    this.contactAddress2 = this.patientContext.address.line2
-    this.contactAddress3 = this.patientContext.address.line3
-    this.contactTown = this.patientContext.address.line4
-    this.contactPostcode = this.patientContext.address.postcode
+    this.copyContextFields()
+    this.$store.commit(mutators.SET_PATIENT, null)
+    this.$store.commit(mutators.SET_TREATMENT_PLAN, null)
   }
 }
 </script>

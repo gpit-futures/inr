@@ -131,8 +131,12 @@ export default {
           items: []
         }
         this.$store.commit(mutators.SET_TREATMENT_PLAN, treatmentPlan)
+        this.$router.push({name: 'Tests'})
       }
     }
+  },
+  mounted () {
+    this.$store.commit(mutators.SET_TREATMENT_PLAN, null)
   }
 }
 </script>

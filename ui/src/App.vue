@@ -3,9 +3,10 @@
     <v-content>
       <v-container>
         <patient-banner />
-        <new-patient v-if="patientNotExist"/>
+        <router-view></router-view>
+        <!-- new-patient v-if="patientNotExist"/>
         <page v-if="patientWithPlan" />
-        <new-treatment-plan v-if="patientWithNoPlan" />
+        <new-treatment-plan v-if="patientWithNoPlan" /-->
       </v-container>
     </v-content>
   </v-app>
@@ -13,9 +14,9 @@
 
 <script>
 import PatientBanner from './components/PatientBanner'
-import Page from './components/Page'
+/* import Page from './components/Page'
 import NewPatient from './components/NewPatient'
-import NewTreatmentPlan from './components/NewTreatmentPlan'
+import NewTreatmentPlan from './components/NewTreatmentPlan' */
 import mutators from './store/mutators'
 import { mapState } from 'vuex'
 import { DwClientConnector } from 'dw-client-connector'
@@ -23,7 +24,7 @@ import { DwClientConnector } from 'dw-client-connector'
 export default {
   name: 'App',
   components: {
-    Page, NewPatient, NewTreatmentPlan, PatientBanner
+    PatientBanner
   },
   data () {
     return {
@@ -56,7 +57,7 @@ export default {
      - tests have been added to the plan
     */
 
-    let mode = window.location.pathname.length
+    // let mode = window.location.pathname.length
     let patient = {'id': '267e175a-57fe-4b8a-a672-15012d83ed9e',
       'title': 'Mr',
       'firstName': 'Ivor',
@@ -96,12 +97,12 @@ export default {
     }
 
     this.$store.commit(mutators.SET_PATIENT_CONTEXT, patient)
-    if (mode > 1) {
-      this.$store.commit(mutators.SET_PATIENT, patient)
-    }
-    if (mode > 2) {
-      this.$store.commit(mutators.SET_TREATMENT_PLAN, treatmentPlan)
-    }
+    // if (mode > 1) {
+    this.$store.commit(mutators.SET_PATIENT, patient)
+    // }
+    // if (mode > 2) {
+    this.$store.commit(mutators.SET_TREATMENT_PLAN, treatmentPlan)
+    // }
 
     DwClientConnector.subscribe('patient-context:changed', (data) => {
       // set patient here
