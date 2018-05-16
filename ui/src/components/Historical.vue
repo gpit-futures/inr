@@ -79,8 +79,8 @@
 </template>
 
 <script>
-import moment from 'moment-es6'
-import { internationalDateToUk } from '../utilities'
+import { mapState } from 'vuex'
+import { internationalDateToUk, ukDateAddDays } from '../utilities'
 
 let makeDays = function (max) {
   let result = [{text: 'Day 1', value: 1}]
@@ -103,13 +103,17 @@ export default {
       omit: null,
       reviewPeriod: null,
       targetInr: this.plan.targetINR,
-      inrValues: ['1.8', '1.9', '2.0', '2.1', '2.2', '2.3', '2.4'],
       doses: [1.0, 2.0, 3.0, 4.0, 5.0, 6.0],
       omits: ['Not Known'].concat(makeDays(6)),
       reviewPeriods: makeDays(30),
       requiredSelect: [v => !!v || 'Please select a value'],
       requiredDate: [v => !!v || 'Please pick a date']
     }
+  },
+  computed: {
+    ...mapState({
+      inrValues: state => state.static.inrValues
+    })
   },
   methods: {
     selectedDate (value) {
@@ -119,7 +123,7 @@ export default {
     },
     save () {
       if (this.$refs.historicalForm.validate()) {
-        let nextTestDate = moment(this.date, 'DD-MMM-YYYY').add(this.reviewPeriod, 'days').format('DD-MMM-YYYY')
+        let nextTestDate = ukDateAddDays(this.date, this.reviewPeriod)
         let historical = {
           testDate: this.date, inr: this.inrValue, dose: this.dose, reviewDays: this.reviewPeriod, nextTestDate
         }

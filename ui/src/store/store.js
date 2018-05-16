@@ -1,7 +1,7 @@
 import Vue from 'vue'
 import Vuex from 'vuex'
 import mutators from './mutators'
-import moment from 'moment-es6'
+import { ukDateToInternational } from '../utilities'
 
 Vue.use(Vuex)
 
@@ -9,7 +9,10 @@ export default new Vuex.Store({
   state: {
     patient: null,
     patientContext: null,
-    treatmentPlan: null
+    treatmentPlan: null,
+    static: {
+      inrValues: ['1.8', '1.9', '2.0', '2.1', '2.2', '2.3', '2.4', '99']
+    }
   },
   mutations: {
     /* The patient stored in the INR system */
@@ -24,7 +27,7 @@ export default new Vuex.Store({
       state.treatmentPlan = treatmentPlan
     },
     [mutators.ADD_TEST_TO_PLAN] (state, test) {
-      let sortDate = moment(test.testDate, 'DD-MMM-YYYY').format('YYYY-MM-DD')
+      let sortDate = ukDateToInternational(test.testDate)
       const data = Object.assign({sortDate}, test)
       state.treatmentPlan.items.push(data)
       state.treatmentPlan.items.sort((p1, p2) => {

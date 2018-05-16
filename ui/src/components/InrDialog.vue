@@ -61,7 +61,8 @@
 
 <script>
 import moment from 'moment-es6'
-import { internationalDateToUk } from '../utilities'
+import { mapState } from 'vuex'
+import { internationalDateToUk, ukDateAddDays } from '../utilities'
 
 export default {
   name: 'inr-dialog',
@@ -76,7 +77,6 @@ export default {
       testingMethods: ['PoCT', 'Lab'],
       comments: null,
       inrValue: null,
-      inrValues: [1.9, 2.0, 2.1, 2.2, 2.3, 2.4],
       inrRules: [v => !!v || 'Please select the INR'],
       testingRules: [v => !!v || 'Please select the testing method']
     }
@@ -85,7 +85,7 @@ export default {
     submit () {
       if (this.$refs.form.validate()) {
         let reviewDays = 14
-        let nextTestDate = moment(this.testDate, 'DD-MMM-YYYY').add(reviewDays, 'days').format('DD-MMM-YYYY')
+        let nextTestDate = ukDateAddDays(this.testDate, reviewDays)
         let record = {testDate: this.testDate, inr: this.inrValue, dose: '5', reviewDays: 14, nextTestDate}
         this.$emit('submit', record)
       }
@@ -98,6 +98,11 @@ export default {
       this.testDate = internationalDateToUk(value)
       this.testDateVisible = false
     }
+  },
+  computed: {
+    ...mapState({
+      inrValues: state => state.static.inrValues
+    })
   },
   watch: {
     showModal (value) {

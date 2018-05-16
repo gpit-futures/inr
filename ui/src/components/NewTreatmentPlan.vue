@@ -49,7 +49,7 @@
         <v-flex xs6>
            <div class="title mt-3 mb-2">Warfarin Details</div>
            <v-select
-             :items="inrs"
+             :items="inrValues"
              v-model="targetINR"
              label="Target INR"
              :rules="requiredRules"></v-select>
@@ -74,6 +74,7 @@
 
 <script>
 import mutators from '../store/mutators'
+import { mapState } from 'vuex'
 import { internationalDateToUk } from '../utilities'
 
 export default {
@@ -91,7 +92,6 @@ export default {
       treatmentDurationList: [],
       treatmentDuration: null,
       showWarfarin: false,
-      inrs: ['1.8', '1.9', '2.0', '2.1', '2.2', '2.3', '2.4'],
       dosingMethod: null,
       dosingMethods: ['Coventry Maintenance', 'Hilingdon Maintenance', 'Manual Dosing'],
       testingMethod: null,
@@ -99,6 +99,11 @@ export default {
       targetINR: null,
       requiredRules: [v => !!v || 'Required value']
     }
+  },
+  computed: {
+    ...mapState({
+      inrValues: state => state.static.inrValues
+    })
   },
   methods: {
     selectedPlanStart (value) {

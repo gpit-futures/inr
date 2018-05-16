@@ -17,7 +17,8 @@
     <treatment-plan-table v-if="!addingHistorical" :plan="treatmentPlan" :test="test" :planSuggested="planSuggested"
         @save="savePlan" @cancel="cancelPlan" />
 
-    <historical v-if="addingHistorical" :plan="treatmentPlan" @add-historical="addHistoricalRecord" @cancel-historical="cancelHistorical"/>
+    <historical v-if="addingHistorical" :plan="treatmentPlan"
+        @add-historical="addHistoricalRecord" @cancel-historical="cancelHistorical"/>
 
     <v-layout v-if="showButtons" row class="mt-3">
       <v-btn color="primary" @click="addINR">Add New INR <v-icon right>playlist_add</v-icon></v-btn>
