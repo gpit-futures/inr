@@ -73,8 +73,8 @@
 </template>
 
 <script>
-import moment from 'moment-es6'
 import mutators from '../store/mutators'
+import { internationalDateToUk } from '../utilities'
 
 export default {
   name: 'new-treatment-plan',
@@ -102,7 +102,7 @@ export default {
   },
   methods: {
     selectedPlanStart (value) {
-      this.planStartDate = moment(value, 'YYYY-MM-DD').format('DD-MMM-YYYY')
+      this.planStartDate = internationalDateToUk(value)
       this.planStartVisible = false
     },
     changedDiagnosis () {
@@ -140,7 +140,3 @@ export default {
   }
 }
 </script>
-
-<style>
-
-</style>

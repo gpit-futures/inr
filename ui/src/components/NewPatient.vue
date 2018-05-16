@@ -66,11 +66,6 @@
               <v-text-field v-model="contactAddress2" label="Address Line 2" />
               <v-text-field v-model="contactAddress3" label="Address Line 3" />
               <v-text-field v-model="contactTown" label="Town / City"/>
-              <!-- v-select
-                :items="counties"
-                v-model="contactCounty"
-                label="County"
-                :rules="requiredRules"></v-select -->
               <v-text-field v-model="contactPostcode" label="Postcode" :rules="requiredRules" />
               <v-text-field v-model="contactTelephone" label="Home Tel" />
               <v-text-field v-model="contactMobile" label="Mobile" />
@@ -90,6 +85,7 @@
 import moment from 'moment-es6'
 import { mapState } from 'vuex'
 import mutators from '../store/mutators'
+import { internationalDateToUk } from '../utilities'
 
 export default {
   name: 'new-patient',
@@ -136,7 +132,7 @@ export default {
   methods: {
     selectedDOB (value) {
       this.patientDOBpicker = value
-      this.patientDOB = moment(value, 'YYYY-MM-DD').format('DD-MMM-YYYY')
+      this.patientDOB = internationalDateToUk(value)
       this.patientDOBVisible = false
     },
     save () {

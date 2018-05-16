@@ -61,6 +61,7 @@
 
 <script>
 import moment from 'moment-es6'
+import { internationalDateToUk } from '../utilities'
 
 export default {
   name: 'inr-dialog',
@@ -94,7 +95,7 @@ export default {
     },
     selectedDate (value) {
       this.testDateFmt = value
-      this.testDate = moment(value, 'YYYY-MM-DD').format('DD-MMM-YYYY')
+      this.testDate = internationalDateToUk(value)
       this.testDateVisible = false
     }
   },

@@ -7,7 +7,6 @@ import NewTreatmentPlan from './components/NewTreatmentPlan'
 Vue.use(VueRouter)
 
 const gotoTests = function (to, from, next) {
-  console.log(to, from, next)
   next('/tests')
 }
 

@@ -80,6 +80,7 @@
 
 <script>
 import moment from 'moment-es6'
+import { internationalDateToUk } from '../utilities'
 
 let makeDays = function (max) {
   let result = [{text: 'Day 1', value: 1}]
@@ -113,7 +114,7 @@ export default {
   methods: {
     selectedDate (value) {
       this.dateFmt = value
-      this.date = moment(value, 'YYYY-MM-DD').format('DD-MMM-YYYY')
+      this.date = internationalDateToUk(value)
       this.dateVisible = false
     },
     save () {

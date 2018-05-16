@@ -65,6 +65,12 @@ export default {
       this.planSuggested = false
       this.test.id = ++this.lastId
       this.$store.commit(mutators.ADD_TEST_TO_PLAN, this.test)
+    },
+    copyInTreatmentValues () {
+      if (this.treatmentPlan) {
+        this.selectedPlanDate = this.treatmentPlan.planDate
+        this.planDates = [this.treatmentPlan.planDate]
+      }
     }
   },
   data () {
@@ -74,8 +80,8 @@ export default {
       lastId: 2,
       test: null,
       planSuggested: false,
-      planDates: ['01-May-2017'],
-      selectedPlanDate: '01-May-2017'
+      planDates: [],
+      selectedPlanDate: null
     }
   },
   computed: {
@@ -84,6 +90,14 @@ export default {
     }),
     showButtons () {
       return (!this.planSuggested) && (!this.addingHistorical)
+    }
+  },
+  mounted () {
+    this.copyInTreatmentValues()
+  },
+  watch: {
+    treatmentPlan () {
+      this.copyInTreatmentValues()
     }
   }
 }

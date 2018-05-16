@@ -4,9 +4,6 @@
       <v-container>
         <patient-banner />
         <router-view></router-view>
-        <!-- new-patient v-if="patientNotExist"/>
-        <page v-if="patientWithPlan" />
-        <new-treatment-plan v-if="patientWithNoPlan" /-->
       </v-container>
     </v-content>
   </v-app>
@@ -14,41 +11,13 @@
 
 <script>
 import PatientBanner from './components/PatientBanner'
-/* import Page from './components/Page'
-import NewPatient from './components/NewPatient'
-import NewTreatmentPlan from './components/NewTreatmentPlan' */
 import mutators from './store/mutators'
-import { mapState } from 'vuex'
 import { DwClientConnector } from 'dw-client-connector'
 
 export default {
   name: 'App',
   components: {
     PatientBanner
-  },
-  data () {
-    return {
-
-    }
-  },
-  computed: {
-    ...mapState({
-      patient: state => state.patient,
-      patientContext: state => state.patientContext,
-      treatmentPlan: state => state.treatmentPlan
-    }),
-    patientExists () {
-      return (this.patient !== null)
-    },
-    patientNotExist () { // No patient but a patientcontext
-      return (this.patient === null) && (this.patientContext !== null)
-    },
-    patientWithNoPlan () {
-      return (this.patient !== null) && (this.treatmentPlan == null)
-    },
-    patientWithPlan () {
-      return (this.patient !== null) && (this.treatmentPlan !== null)
-    }
   },
   mounted () {
     /* For development reasons the length of the url will determine whether
@@ -57,7 +26,6 @@ export default {
      - tests have been added to the plan
     */
 
-    // let mode = window.location.pathname.length
     let patient = {'id': '267e175a-57fe-4b8a-a672-15012d83ed9e',
       'title': 'Mr',
       'firstName': 'Ivor',
@@ -97,12 +65,8 @@ export default {
     }
 
     this.$store.commit(mutators.SET_PATIENT_CONTEXT, patient)
-    // if (mode > 1) {
     this.$store.commit(mutators.SET_PATIENT, patient)
-    // }
-    // if (mode > 2) {
     this.$store.commit(mutators.SET_TREATMENT_PLAN, treatmentPlan)
-    // }
 
     DwClientConnector.subscribe('patient-context:changed', (data) => {
       // set patient here
@@ -114,7 +78,3 @@ export default {
   }
 }
 </script>
-
-<style>
-
-</style>
