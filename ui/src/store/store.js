@@ -1,6 +1,7 @@
 import Vue from 'vue'
 import Vuex from 'vuex'
 import mutators from './mutators'
+import moment from 'moment-es6'
 
 Vue.use(Vuex)
 
@@ -23,7 +24,12 @@ export default new Vuex.Store({
       state.treatmentPlan = treatmentPlan
     },
     [mutators.ADD_TEST_TO_PLAN] (state, test) {
-      state.treatmentPlan.items.unshift(test)
+      let sortDate = moment(test.testDate, 'DD-MMM-YYYY').format('YYYY-MM-DD')
+      const data = Object.assign({sortDate}, test)
+      state.treatmentPlan.items.push(data)
+      state.treatmentPlan.items.sort((p1, p2) => {
+        return p2.sortDate.localeCompare(p1.sortDate)
+      })
     }
   }
 })
