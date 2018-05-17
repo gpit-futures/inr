@@ -1,5 +1,5 @@
 <template>
-    <div>
+  <div>
     <v-form ref="planForm" lazy-validation>
       <v-layout row class="mt-3">
         <v-flex xs12>

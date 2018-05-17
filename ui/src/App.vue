@@ -1,9 +1,11 @@
 <template>
   <v-app>
     <v-content>
-      <v-container>
+      <v-container fill-height>
+        <v-layout column>
         <patient-banner />
         <router-view></router-view>
+      </v-layout>
       </v-container>
     </v-content>
   </v-app>
@@ -20,60 +22,20 @@ export default {
     PatientBanner
   },
   mounted () {
-    /* For development reasons the length of the url will determine whether
-     - the patient has been added to interval
-     - the plan has been created
-     - tests have been added to the plan
-    */
+    console.log('------initialised INR')
 
-    let patient = {'id': '267e175a-57fe-4b8a-a672-15012d83ed9e',
-      'title': 'Mr',
-      'firstName': 'Ivor',
-      'lastName': 'Cox',
-      'gender': 'Male',
-      'phone': '(011981) 32362',
-      'pasNumber': '352541',
-      'nhsNumber': '9999999000',
-      'dateOfBirth': '1944-07-05T23:00:00Z',
-      'address': {
-        'line1': '6948 Et St.',
-        'line2': 'Halesowen',
-        'line3': 'Worcestershire',
-        'line4': null,
-        'postcode': 'VX27 5DV'
-      },
-      'gp': {
-        'name': 'Goff Carolyn D.',
-        'address': {
-          'line1': 'Hamilton Practice',
-          'line2': '5544 Ante Street',
-          'line3': 'Hamilton',
-          'line4': 'Lanarkshire',
-          'postcode': 'N06 5LP'
-        }
-      }
-    }
-
-    let treatmentPlan = {
-      planDate: '14-Apr-2017',
-      diagnosis: 'Atrial fibrillation',
-      drug: 'Warfarin',
-      targetINR: '2.0',
-      dosingMethod: 'Manual Dosing',
-      testingMethod: 'PoCT',
-      items: []
-    }
-
-    this.$store.commit(mutators.SET_PATIENT_CONTEXT, patient)
-    this.$store.commit(mutators.SET_PATIENT, patient)
-    this.$store.commit(mutators.SET_TREATMENT_PLAN, treatmentPlan)
-
-    DwClientConnector.subscribe('patient-context:changed', (data) => {
-      // set patient here
+    DwClientConnector.subscribe('patient-context:changed', (patient) => {
+      console.log('INR patient-context:changed', patient)
+      this.$store.commit(mutators.SET_PATIENT_CONTEXT, patient)
+      this.$store.commit(mutators.SET_PATIENT, patient)
+      this.$router.push({name: 'NewPlan'})
     })
 
     DwClientConnector.subscribe('patient-context:ended', () => {
-      // reset patient here and navigate to
+      console.log('INR patient-context:ended')
+      this.$store.commit(mutators.SET_PATIENT_CONTEXT, null)
+      this.$store.commit(mutators.SET_PATIENT, null)
+      this.$router.push({name: 'LandingPage'})
     })
   }
 }
