@@ -13,7 +13,7 @@
          </v-layout>
        </v-flex>
     </v-layout>
-    <transition-group name="reveal">
+    <transition name="reveal">
       <div v-if="patient" key="patient">
         <v-layout row class="purple darken-1 white--text pl-2 pr-2 pt-3 pb-3 justify-space-between">
           <span class="body-1">{{patientName}}</span>
@@ -35,31 +35,31 @@
           </div>
         </v-layout>
         <v-layout row class="pa-2" justify-space-between>
-          <div>
+          <div class="pr-1">
             <span class="caption">Address:</span>
-            <span class="body-1">{{address}}</span>
+            <span class="body-1 address">{{address}}</span>
           </div>
-          <div v-if="treatmentPlan" key="treatment">
-            <div>
+          <template v-if="treatmentPlan">
+            <div class="px-1">
               <span class="caption">Diagnosis:</span>
               <span class="body-1">{{treatmentPlan.diagnosis}}</span>
             </div>
-            <div>
+            <div class="px-1">
               <span class="caption">Drug:</span>
               <span class="body-1">{{treatmentPlan.drug}}</span>
             </div>
-            <div>
+            <div class="px-1">
               <span class="caption">Target INR:</span>
               <span class="body-1">{{treatmentPlan.targetINR}}</span>
             </div>
-            <div>
+            <div class="px-1">
               <span class="caption">Date:</span>
               <span class="body-1">{{treatmentPlan.treatmentDuration}}</span>
             </div>
-          </div>
+          </template>
         </v-layout>
       </div>
-    </transition-group>
+    </transition>
   </v-card>
 </template>
 

@@ -9,7 +9,9 @@
         <treatment-plans />
       </v-tab-item>
       <v-tab-item key="demo">
-        <demographics />
+        <div class="headline mt-3">
+          Demographics...
+        </div>
       </v-tab-item>
       <v-tab-item key="manage">
         <div class="headline mt-3">
@@ -31,11 +33,10 @@
 
 <script>
 import TreatmentPlans from './TreatmentPlans'
-import Demographics from './Demographics'
 
 export default {
   name: 'page',
-  components: {TreatmentPlans, Demographics},
+  components: { TreatmentPlans },
   data () {
     return { // Some mock data to fill the page
       activeTab: null
@@ -43,8 +44,3 @@ export default {
   }
 }
 </script>
-
-<!-- Add "scoped" attribute to limit CSS to this component only -->
-<style scoped>
-
-</style>
