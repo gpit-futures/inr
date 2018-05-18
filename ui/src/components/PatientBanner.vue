@@ -13,49 +13,53 @@
          </v-layout>
        </v-flex>
     </v-layout>
-    <v-layout v-if="patient" row class="purple darken-1 white--text pl-2 pr-2 pt-3 pb-3 justify-space-between">
-      <span class="body-1">{{patientName}}</span>
-      <div>
-        <span class="caption">Born:</span>
-        <span class="body-1">{{patient.dateOfBirth | date}} ({{patientAge}}y)</span>
+    <transition-group name="reveal">
+      <div v-if="patient" key="patient">
+        <v-layout row class="purple darken-1 white--text pl-2 pr-2 pt-3 pb-3 justify-space-between">
+          <span class="body-1">{{patientName}}</span>
+          <div>
+            <span class="caption">Born:</span>
+            <span class="body-1">{{patient.dateOfBirth | date}} ({{patientAge}}y)</span>
+          </div>
+          <div>
+            <span class="caption">Gender:</span>
+            <span class="body-1">{{patient.gender}}</span>
+          </div>
+          <div>
+            <span class="caption">NHS Number:</span>
+            <span class="body-1">{{patient.nhsNumber}}</span>
+          </div>
+          <div>
+            <span class="caption">GP Practice:</span>
+            <span class="body-1">{{patientContext.gp.address.line1}}</span>
+          </div>
+        </v-layout>
+        <v-layout row class="pa-2" justify-space-between>
+          <div>
+            <span class="caption">Address:</span>
+            <span class="body-1">{{address}}</span>
+          </div>
+          <div v-if="treatmentPlan" key="treatment">
+            <div>
+              <span class="caption">Diagnosis:</span>
+              <span class="body-1">{{treatmentPlan.diagnosis}}</span>
+            </div>
+            <div>
+              <span class="caption">Drug:</span>
+              <span class="body-1">{{treatmentPlan.drug}}</span>
+            </div>
+            <div>
+              <span class="caption">Target INR:</span>
+              <span class="body-1">{{treatmentPlan.targetINR}}</span>
+            </div>
+            <div>
+              <span class="caption">Date:</span>
+              <span class="body-1">{{treatmentPlan.treatmentDuration}}</span>
+            </div>
+          </div>
+        </v-layout>
       </div>
-      <div>
-        <span class="caption">Gender:</span>
-        <span class="body-1">{{patient.gender}}</span>
-      </div>
-      <div>
-        <span class="caption">NHS Number:</span>
-        <span class="body-1">{{patient.nhsNumber}}</span>
-      </div>
-      <div>
-        <span class="caption">GP Practice:</span>
-        <span class="body-1">{{patientContext.gp.address.line1}}</span>
-      </div>
-    </v-layout>
-    <v-layout v-if="patient" row class="pa-2" justify-space-between>
-      <div>
-        <span class="caption">Address:</span>
-        <span class="body-1">{{address}}</span>
-      </div>
-      <template v-if="treatmentPlan">
-        <div>
-          <span class="caption">Diagnosis:</span>
-          <span class="body-1">{{treatmentPlan.diagnosis}}</span>
-        </div>
-        <div>
-          <span class="caption">Drug:</span>
-          <span class="body-1">{{treatmentPlan.drug}}</span>
-        </div>
-        <div>
-          <span class="caption">Target INR:</span>
-          <span class="body-1">{{treatmentPlan.targetINR}}</span>
-        </div>
-        <div>
-          <span class="caption">Date:</span>
-          <span class="body-1">{{treatmentPlan.treatmentDuration}}</span>
-        </div>
-      </template>
-    </v-layout>
+    </transition-group>
   </v-card>
 </template>
 
@@ -105,6 +109,14 @@ export default {
 }
 </script>
 
-<style>
-
+<style scoped>
+.reveal-enter-active, .reveal-leave-active {
+  transition: opacity 0.3s, max-height 0.3s;
+  overflow: hidden;
+  max-height: 100px;
+}
+.reveal-enter, .reveal-leave-to {
+  opacity: 0;
+  max-height: 0px;
+}
 </style>
