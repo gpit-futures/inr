@@ -89,16 +89,14 @@ export default {
       return `${lastName}, ${this.patient.firstName}. (${this.patient.title})`
     },
     address () {
-      let address = this.patient.address
-      let fields = ['line1', 'line2', 'line3', 'line4', 'postcode']
       let addrArray = []
-      for (let i = 0; i < fields.length; i++) {
-        let value = address[fields[i]]
-        if (value) {
-          addrArray.push(value)
+      let fields = ['line1', 'line2', 'line3', 'line4', 'postcode']
+      fields.forEach(field => {
+        if (this.patient.address[field]) {
+          addrArray.push(this.patient.address[field])
         }
-      }
-      return addrArray.join(', ') // todo
+      })
+      return addrArray.join(', ')
     }
   },
   filters: {
