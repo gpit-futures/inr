@@ -22,18 +22,13 @@ public class AbstractController<DTO extends ResponseDTO> {
 	}
 	
 	@GetMapping(path="/associated")
-	public List<DTO> getByNHSNumber(@RequestParam String nhsNumber) {
+	public List<DTO> getByNHSNumber(@RequestParam String nhsNumber) throws NotFoundException {
 		return restService.readAssociated(nhsNumber);
 	}
 
 	@GetMapping
 	public DTO read(@RequestParam String id) throws NotFoundException {
-		DTO dto = restService.read(id);
-		if (dto == null) {
-			throw new NotFoundException("Not Found");
-		}
-		
-		return dto;
+		return restService.read(id);
 	}
 	
 	@PostMapping
