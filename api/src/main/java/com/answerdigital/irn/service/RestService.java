@@ -51,16 +51,18 @@ public abstract class RestService<DTO extends ResponseDTO> {
 	@SuppressWarnings("unchecked")
 	public List<DTO> readAssociated(String nhsNumber) {
 		Patient patient = readPatient(nhsNumber);
-		String url = MessageFormat.format("{0}{1}{2}{3}{4}", baseUrl, clazz.getSimpleName(), "?patient=", patient.getId(), "&_format=json");	
-		SearchDTO searchDto = restTemplate.getForObject(url, SearchDTO.class);
 		List<DTO> dtos = new ArrayList<>();
 		
-		for (Entry entry : searchDto.getEntry()) {
-			dtos.add((DTO)readEntity(entry.getFullUrl(), clazz));
+		if (patient != null) {
+			String url = MessageFormat.format("{0}{1}{2}{3}{4}", baseUrl, clazz.getSimpleName(), "?patient=", patient.getId(), "&_format=json");	
+			SearchDTO searchDto = restTemplate.getForObject(url, SearchDTO.class);
+			
+			for (Entry entry : searchDto.getEntry()) {
+				dtos.add((DTO)readEntity(entry.getFullUrl(), clazz));
+			}
 		}
 		
 		return dtos;
-		
 	}
 	
 	private Patient readPatient(String id) {
