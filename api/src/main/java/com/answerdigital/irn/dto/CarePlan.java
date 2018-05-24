@@ -8,8 +8,8 @@ public class CarePlan extends ResponseDTO {
 	private String intent;
 	private String title;
 	private Period period;
-	private ReferencedConcept author;
-	private ReferencedConcept addresses;
+	private ReferencedConcept[] author;
+	private ReferencedConcept[] addresses;
 	private Activity[] activity;
 	
 	public String getStatus() {
@@ -54,17 +54,17 @@ public class CarePlan extends ResponseDTO {
 		this.period = period;
 	}
 	
-	public ReferencedConcept getAuthor() {
+	public ReferencedConcept[] getAuthor() {
 		return author;
 	}
-	public void setAuthor(ReferencedConcept author) {
+	public void setAuthor(ReferencedConcept[] author) {
 		this.author = author;
 	}
 	
-	public ReferencedConcept getAddresses() {
+	public ReferencedConcept[] getAddresses() {
 		return addresses;
 	}
-	public void setAddresses(ReferencedConcept addresses) {
+	public void setAddresses(ReferencedConcept[] addresses) {
 		this.addresses = addresses;
 	}
 	
