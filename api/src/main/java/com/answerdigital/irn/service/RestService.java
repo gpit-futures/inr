@@ -20,8 +20,6 @@ import com.answerdigital.irn.dto.Patient;
 import com.answerdigital.irn.dto.ResponseDTO;
 import com.answerdigital.irn.dto.SearchDTO;
 
-import javassist.NotFoundException;
-
 public abstract class RestService<DTO extends ResponseDTO> {
 
 	@Autowired
@@ -46,12 +44,12 @@ public abstract class RestService<DTO extends ResponseDTO> {
 	}
 	
 	@SuppressWarnings("unchecked")
-	public DTO read(String id) throws NotFoundException {
+	public DTO read(String id) {
 		return (DTO)read(id, clazz);
 	}
 	
 	@SuppressWarnings("unchecked")
-	public List<DTO> readAssociated(String nhsNumber) throws NotFoundException {
+	public List<DTO> readAssociated(String nhsNumber) {
 		Patient patient = readPatient(nhsNumber);
 		String url = MessageFormat.format("{0}{1}{2}{3}{4}", baseUrl, clazz.getSimpleName(), "?patient=", patient.getId(), "&_format=json");	
 		SearchDTO searchDto = restTemplate.getForObject(url, SearchDTO.class);
@@ -65,7 +63,7 @@ public abstract class RestService<DTO extends ResponseDTO> {
 		
 	}
 	
-	private Patient readPatient(String id) throws NotFoundException {
+	private Patient readPatient(String id) {
 		return (Patient)read(id, Patient.class);
 	}
 	
@@ -73,14 +71,14 @@ public abstract class RestService<DTO extends ResponseDTO> {
 		return restTemplate.getForObject(url, clazz);
 	}
 	
-	private Object read(String id, Class<?> c) throws NotFoundException {
+	private Object read(String id, Class<?> c) {
 		String url = MessageFormat.format("{0}{1}{2}{3}{4}", baseUrl, c.getSimpleName(), searchQuery, c == Patient.class ? patientNamespace : namespace(), id);
 		SearchDTO searchDto = restTemplate.getForObject(url, SearchDTO.class);
 		
 		if (searchDto.getEntry() != null) {
 			return readEntity(searchDto.getEntry()[0].getFullUrl(), c);
 		} else {
-			throw new NotFoundException("Not Found");
+			return null;
 		}
 	}
 	
