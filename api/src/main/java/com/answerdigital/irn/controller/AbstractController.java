@@ -2,6 +2,8 @@ package com.answerdigital.irn.controller;
 
 import java.util.List;
 
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -22,18 +24,19 @@ public class AbstractController<DTO extends ResponseDTO> {
 	}
 	
 	@GetMapping(path="/associated")
-	public List<DTO> getByNHSNumber(@RequestParam String nhsNumber) {
-		return restService.readAssociated(nhsNumber);
+	public ResponseEntity<List<DTO>> getByNHSNumber(@RequestParam String nhsNumber) {
+		List<DTO> dtos = restService.readAssociated(nhsNumber);
+		return dtos.isEmpty() ? 
+				new ResponseEntity<List<DTO>>(HttpStatus.NOT_FOUND) :
+				new ResponseEntity<List<DTO>>(dtos, HttpStatus.OK);
 	}
 
 	@GetMapping
-	public DTO read(@RequestParam String id) throws NotFoundException {
+	public ResponseEntity<DTO> read(@RequestParam String id) throws NotFoundException {
 		DTO dto = restService.read(id);
-		if (dto == null) {
-			throw new NotFoundException("Not Found");
-		}
-		
-		return dto;
+		return dto == null ? 
+				new ResponseEntity<DTO>(HttpStatus.NOT_FOUND) :
+				new ResponseEntity<DTO>(dto, HttpStatus.OK);
 	}
 	
 	@PostMapping
