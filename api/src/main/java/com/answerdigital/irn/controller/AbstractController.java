@@ -24,8 +24,8 @@ public class AbstractController<DTO extends ResponseDTO> {
 	}
 	
 	@GetMapping(path="/associated")
-	public ResponseEntity<List<DTO>> getByNHSNumber(@RequestParam String nhsNumber) {
-		List<DTO> dtos = restService.readAssociated(nhsNumber);
+	public ResponseEntity<List<DTO>> getByAssociation(@RequestParam String associatedType, @RequestParam String id) {
+		List<DTO> dtos = restService.readAssociated(associatedType, id);
 		return dtos.isEmpty() ? 
 				new ResponseEntity<List<DTO>>(HttpStatus.NOT_FOUND) :
 				new ResponseEntity<List<DTO>>(dtos, HttpStatus.OK);

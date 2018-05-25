@@ -47,14 +47,22 @@ public abstract class RestService<DTO extends ResponseDTO> {
 	public DTO read(String id) {
 		return (DTO)read(id, clazz);
 	}
-	
+
 	@SuppressWarnings("unchecked")
-	public List<DTO> readAssociated(String nhsNumber) {
-		Patient patient = readPatient(nhsNumber);
+	public List<DTO> readAssociated(String type, String id) {
 		List<DTO> dtos = new ArrayList<>();
+		Class<? extends ResponseDTO> associatedClass = null;
 		
-		if (patient != null) {
-			String url = MessageFormat.format("{0}{1}{2}{3}{4}", baseUrl, clazz.getSimpleName(), "?patient=", patient.getId(), "&_format=json");	
+		try {
+			associatedClass = (Class<? extends ResponseDTO>) Class.forName("com.answerdigital.irn.dto." + type);
+		} catch (ClassNotFoundException e) {
+			return dtos;
+		}
+		
+		ResponseDTO response = readType(associatedClass, id);
+		
+		if (response != null) {
+			String url = MessageFormat.format("{0}{1}{2}{3}{4}", baseUrl, clazz.getSimpleName(), "?" + type.toLowerCase() + "=", response.getId(), "&_format=json");	
 			SearchDTO searchDto = restTemplate.getForObject(url, SearchDTO.class);
 			
 			for (Entry entry : searchDto.getEntry()) {
@@ -65,8 +73,8 @@ public abstract class RestService<DTO extends ResponseDTO> {
 		return dtos;
 	}
 	
-	private Patient readPatient(String id) {
-		return (Patient)read(id, Patient.class);
+	private ResponseDTO readType(Class<? extends ResponseDTO> associatedClass, String id) {
+		return associatedClass.cast(read(id, associatedClass));
 	}
 	
 	private Object readEntity(String url, Class<?> clazz) {
