@@ -29,8 +29,7 @@ export default {
       this.$store.commit(mutators.SET_PATIENT_CONTEXT, patient)
       /* Note: the patient should be loaded from INR backend, if the patient is not there then
          the NewPatient page should be displayed. */
-      this.$store.commit(mutators.SET_PATIENT, patient)
-      this.$router.push({name: 'NewPlan'})
+      this.$store.commit(mutators.SET_PATIENT_INR, patient)
     })
 
     DwClientConnector.subscribe('patient-context:ended', () => {

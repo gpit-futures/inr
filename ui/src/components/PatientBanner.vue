@@ -19,7 +19,7 @@
           <span class="body-1">{{patientName}}</span>
           <div>
             <span class="caption">Born:</span>
-            <span class="body-1">{{patient.dateOfBirth | date}} ({{patientAge}}y)</span>
+            <span class="body-1">{{patient.birthDate | date}} ({{patientAge}}y)</span>
           </div>
           <div>
             <span class="caption">Gender:</span>
@@ -27,7 +27,7 @@
           </div>
           <div>
             <span class="caption">NHS Number:</span>
-            <span class="body-1">{{patient.nhsNumber}}</span>
+            <span class="body-1">{{patient.identifier[0].value}}</span>
           </div>
           <div>
             <span class="caption">GP Practice:</span>
@@ -39,22 +39,22 @@
             <span class="caption">Address:</span>
             <span class="body-1 address">{{address}}</span>
           </div>
-          <template v-if="treatmentPlan">
+          <template v-if="treatmentPlans">
             <div class="px-1">
               <span class="caption">Diagnosis:</span>
-              <span class="body-1">{{treatmentPlan.diagnosis}}</span>
+              <span class="body-1">{{selectedPlan.addresses[0].display}}</span>
             </div>
             <div class="px-1">
               <span class="caption">Drug:</span>
-              <span class="body-1">{{treatmentPlan.drug}}</span>
+              <span class="body-1">{{selectedPlan.activity[0].detail.productCodeableConcept.coding[0].display}}</span>
             </div>
             <div class="px-1">
               <span class="caption">Target INR:</span>
-              <span class="body-1">{{treatmentPlan.targetINR}}</span>
+              <span class="body-1">{{selectedPlan.text.div.split(',')[0] | strip}}</span>
             </div>
             <div class="px-1">
               <span class="caption">Date:</span>
-              <span class="body-1">{{treatmentPlan.treatmentDuration}}</span>
+              <span class="body-1">{{selectedPlan.period.start | date}}</span>
             </div>
           </template>
         </v-layout>
@@ -78,22 +78,23 @@ export default {
     ...mapState({
       patient: state => state.patient,
       patientContext: state => state.patientContext,
-      treatmentPlan: state => state.treatmentPlan
+      treatmentPlans: state => state.treatmentPlans,
+      selectedPlan: state => state.selectedPlan
     }),
     patientAge () {
-      let dob = moment(this.patient.dateOfBirth)
+      let dob = moment(this.patient.birthDate)
       return moment().diff(dob, 'years')
     },
     patientName () {
-      let lastName = this.patient.lastName.toUpperCase()
-      return `${lastName}, ${this.patient.firstName}. (${this.patient.title})`
+      let lastName = this.patient.name[0].family.toUpperCase()
+      return `${lastName}, ${this.patient.name[0].given[0]}. (${this.patient.name[0].prefix[0]})`
     },
     address () {
       let addrArray = []
-      let fields = ['line1', 'line2', 'line3', 'line4', 'postcode']
+      let fields = ['line', 'city', 'district', 'postalCode']
       fields.forEach(field => {
-        if (this.patient.address[field]) {
-          addrArray.push(this.patient.address[field])
+        if (this.patient.address[0][field]) {
+          addrArray.push(this.patient.address[0][field])
         }
       })
       return addrArray.join(', ')
@@ -102,6 +103,9 @@ export default {
   filters: {
     date (value) {
       return moment(value).format('DD-MMM-YYYY')
+    },
+    strip (value) {
+      return value.replace(/<[^>]+>/ig, '')
     }
   }
 }

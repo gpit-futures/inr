@@ -1,23 +1,23 @@
 <template>
   <div>
-    <v-card v-if="plan" class="mb-3">
-      <v-layout row  v-if="plan.items.length > 0" class="purple darken-1 white--text text-xs-center">
+    <v-card v-if="selectedPlan" class="mb-3">
+      <v-layout row  v-if="observations == null || observations.length > 0" class="purple darken-1 white--text text-xs-center">
         <v-flex xs2 class="py-1">Test Date</v-flex>
         <v-flex xs2 class="py-1">INR</v-flex>
         <v-flex xs3 class="py-1">Dose (mg/day)</v-flex>
         <v-flex xs3 class="py-1">Review days</v-flex>
         <v-flex xs2 class="py-1">Next Test Date</v-flex>
       </v-layout>
-      <v-layout row v-if="plan.items.length === 0" class="purple darken-1 white--text text-xs-center">
-        <v-flex xs12 py-1>This patient has no recorded treatments since the treatment plan's start date: {{plan.planDate}}</v-flex>
+      <v-layout row v-else class="purple darken-1 white--text text-xs-center">
+        <v-flex xs12 py-1>This patient has no recorded treatments since the treatment plan's start date: {{selectedPlan.period.start | date}}</v-flex>
       </v-layout>
       <transition-group name="tests">
-        <v-layout row v-for="row in plan.items" :key="row.id" class="date-row text-xs-center">
-          <v-flex xs2 class="py-1">{{row.testDate}}</v-flex>
-          <v-flex xs2 class="py-1">{{row.inr}}</v-flex>
-          <v-flex xs3 class="py-1">{{row.dose}}</v-flex>
-          <v-flex xs3 class="py-1">{{row.reviewDays}}</v-flex>
-          <v-flex xs2 class="py-1">{{row.nextTestDate}}</v-flex>
+        <v-layout row v-for="row in observations" :key="row.id" class="date-row text-xs-center">
+          <v-flex xs2 class="py-1">{{row.effectiveDateTime}}</v-flex>
+          <v-flex xs2 class="py-1">{{row.valueQuantity.value}}</v-flex>
+          <v-flex xs3 class="py-1">{{strip(row.text.div.split(',')[0])}}</v-flex>
+          <v-flex xs3 class="py-1">{{strip(row.text.div.split(',')[1])}}</v-flex>
+          <v-flex xs2 class="py-1">{{strip(row.text.div.split(',')[2])}}</v-flex>
         </v-layout>
       </transition-group>
 
@@ -54,10 +54,12 @@
 
 <script>
 import SuggestedPlan from './SuggestedPlan'
+import moment from 'moment-es6'
+import { mapState } from 'vuex'
 
 export default {
   name: 'treatment-plan-table',
-  props: ['plan', 'planSuggested', 'test'],
+  props: ['test','planSuggested'],
   components: {SuggestedPlan},
   methods: {
     savePlan () {
@@ -65,6 +67,21 @@ export default {
     },
     cancelPlan () {
       this.$emit('cancel')
+    },
+    strip (value) {
+      return value.replace(/<[^>]+>/ig, '')
+    },
+
+  },
+  computed: {
+    ...mapState({
+      observations: state => state.observations,
+      selectedPlan: state => state.selectedPlan,
+    })
+  },
+  filters: {
+    date (value) {
+      return moment(value).format('DD-MMM-YYYY')
     }
   }
 }
