@@ -6,7 +6,7 @@ public class Encounter extends ResponseDTO {
 	private ReferencedConcept subject;
 	private ReferencedConcept[] particpant;
 	private Period period;
-	private CodeableConcept reason;
+	private CodeableConcept[] reason;
 	private ReferencedConcept[] diagnosis;
 
 	public String getStatus() {
@@ -41,11 +41,11 @@ public class Encounter extends ResponseDTO {
 		this.period = period;
 	}
 
-	public CodeableConcept getReason() {
+	public CodeableConcept[] getReason() {
 		return reason;
 	}
 
-	public void setReason(CodeableConcept reason) {
+	public void setReason(CodeableConcept[] reason) {
 		this.reason = reason;
 	}
 
