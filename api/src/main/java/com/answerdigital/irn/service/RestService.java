@@ -16,7 +16,6 @@ import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestTemplate;
 
 import com.answerdigital.irn.dto.Entry;
-import com.answerdigital.irn.dto.Patient;
 import com.answerdigital.irn.dto.ResponseDTO;
 import com.answerdigital.irn.dto.SearchDTO;
 
@@ -43,53 +42,27 @@ public abstract class RestService<DTO extends ResponseDTO> {
 		this.clazz = clazz;
 	}
 	
-	@SuppressWarnings("unchecked")
 	public DTO read(String id) {
-		return (DTO)read(id, clazz);
-	}
-
-	@SuppressWarnings("unchecked")
-	public List<DTO> readAssociated(String type, String id) {
-		List<DTO> dtos = new ArrayList<>();
-		Class<? extends ResponseDTO> associatedClass = null;
-		
-		try {
-			associatedClass = (Class<? extends ResponseDTO>) Class.forName("com.answerdigital.irn.dto." + type);
-		} catch (ClassNotFoundException e) {
-			return dtos;
-		}
-		
-		ResponseDTO response = readType(associatedClass, id);
-		
-		if (response != null) {
-			String url = MessageFormat.format("{0}{1}{2}{3}{4}", baseUrl, clazz.getSimpleName(), "?" + type.toLowerCase() + "=", response.getId(), "&_format=json");	
-			SearchDTO searchDto = restTemplate.getForObject(url, SearchDTO.class);
-			
-			for (Entry entry : searchDto.getEntry()) {
-				dtos.add((DTO)readEntity(entry.getFullUrl(), clazz));
-			}
-		}
-		
-		return dtos;
-	}
-	
-	private ResponseDTO readType(Class<? extends ResponseDTO> associatedClass, String id) {
-		return associatedClass.cast(read(id, associatedClass));
-	}
-	
-	private Object readEntity(String url, Class<?> clazz) {
-		return restTemplate.getForObject(url, clazz);
-	}
-	
-	private Object read(String id, Class<?> c) {
-		String url = MessageFormat.format("{0}{1}{2}{3}{4}", baseUrl, c.getSimpleName(), searchQuery, c == Patient.class ? patientNamespace : namespace(), id);
+		String url = MessageFormat.format("{0}{1}{2}{3}{4}", baseUrl, clazz.getSimpleName(), searchQuery, namespace(), id);
 		SearchDTO searchDto = restTemplate.getForObject(url, SearchDTO.class);
 		
 		if (searchDto.getEntry() != null) {
-			return readEntity(searchDto.getEntry()[0].getFullUrl(), c);
+			return restTemplate.getForObject(searchDto.getEntry()[0].getFullUrl(), clazz);
 		} else {
 			return null;
 		}
+	}
+
+	public List<DTO> readAssociated(String type, String id) {
+		List<DTO> dtos = new ArrayList<>();
+		String url = MessageFormat.format("{0}{1}{2}{3}{4}", baseUrl, clazz.getSimpleName(), "?" + type.toLowerCase() + "=", id, "&_format=json");	
+		SearchDTO searchDto = restTemplate.getForObject(url, SearchDTO.class);
+		
+		for (Entry entry : searchDto.getEntry()) {
+			dtos.add((DTO)restTemplate.getForObject(entry.getFullUrl(), clazz));
+		}
+	
+		return dtos;
 	}
 	
 	public ResponseDTO create(DTO dto) throws Exception {
