@@ -1,0 +1,22 @@
+version: "3"
+services:
+   inr-middletier:
+      image: gpitfutures/inr_middletier:latest
+      ports:
+         - 8082:8082
+      networks:
+         - inr-network
+      depends_on:
+         - hapi-server
+   hapi-server:
+      image: gpitfutures/hapi_server:3.4.0
+      ports:
+         - 8080:8080
+      volumes:
+         - ./data:/var/lib/jetty/target
+      networks:
+         - inr-network
+
+networks:
+   inr-network:
+      driver: bridge
