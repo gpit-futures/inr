@@ -1,5 +1,6 @@
 package com.answerdigital.irn.service;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
@@ -11,8 +12,9 @@ public class EncounterRestService extends RestService<Encounter> {
 	@Value("${encounter.namespace}")
 	private String encounterNamespace;
 	
-	public EncounterRestService() {
-		super(Encounter.class);
+	@Autowired
+	public EncounterRestService(EncounterMessageService encounterMessageService) {
+		super(Encounter.class, encounterMessageService);
 	}
 	
 	@Override

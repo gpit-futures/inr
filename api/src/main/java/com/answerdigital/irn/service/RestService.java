@@ -24,6 +24,8 @@ public abstract class RestService<DTO extends ResponseDTO> {
 	@Autowired
 	private RestTemplate restTemplate;
 	
+	private MessageService<DTO> messageService;
+	
 	@Value("${base.url}")
 	private String baseUrl;
 	
@@ -38,8 +40,9 @@ public abstract class RestService<DTO extends ResponseDTO> {
 	
 	private Class<DTO> clazz;
 	
-	public RestService(Class<DTO> clazz) {
+	public RestService(Class<DTO> clazz, MessageService<DTO> messageService) {
 		this.clazz = clazz;
+		this.messageService = messageService;
 	}
 	
 	public DTO read(String id) {
@@ -101,7 +104,11 @@ public abstract class RestService<DTO extends ResponseDTO> {
         }
         
         try {
-        	announceEvent(dto);
+        	if (isUpdate) {
+        		publishUpdate(dto);
+        	} else {
+        		publishCreate(dto);
+        	}
         } catch (Exception e) {
         	if (response.getBody().getIssue() != null) {
         		String diagnostics = response.getBody().getIssue()[0].getDiagnostics();
@@ -119,8 +126,12 @@ public abstract class RestService<DTO extends ResponseDTO> {
 		
 	}
 	
-	private void announceEvent(DTO dto) throws Exception {
-
+	private void publishCreate(DTO dto) throws Exception {
+		messageService.publishCreateMessage(dto);
+	}
+	
+	private void publishUpdate(DTO dto) throws Exception {
+		messageService.publishUpdateMessage(dto);
 	}
 	
 	protected abstract String namespace();

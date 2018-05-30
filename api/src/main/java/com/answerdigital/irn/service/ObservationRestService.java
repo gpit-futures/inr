@@ -1,5 +1,6 @@
 package com.answerdigital.irn.service;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
@@ -11,8 +12,9 @@ public class ObservationRestService extends RestService<Observation> {
 	@Value("${observation.namespace}")
 	private String observationNamespace;
 	
-	public ObservationRestService() {
-		super(Observation.class);
+	@Autowired
+	public ObservationRestService(ObservationMessageService observationMessageService) {
+		super(Observation.class, observationMessageService);
 	}
 	
 	@Override
