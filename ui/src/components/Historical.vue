@@ -25,7 +25,7 @@
              :rules="requiredDate"
              readonly>
            </v-text-field>
-           <v-date-picker :value="dateFmt" @input="selectedDate" locale="en-GB" scrollable attach>
+           <v-date-picker :value="dateFmt" :max="todaysDate" @input="selectedDate" locale="en-GB" scrollable attach>
            </v-date-picker>
         </v-menu>
       </v-flex>
@@ -81,6 +81,7 @@
 <script>
 import { mapState } from 'vuex'
 import { internationalDateToUk, ukDateAddDays } from '../utilities'
+import moment from 'moment-es6'
 
 let makeDays = function (max) {
   let result = [{text: 'Day 1', value: 1}]
@@ -88,6 +89,10 @@ let makeDays = function (max) {
     result.push({text: `Days ${i}`, value: i})
   }
   return result
+}
+
+let strip = function (value) {
+  return value.replace(/<[^>]+>/ig, '').split(',')[0]
 }
 
 export default {
@@ -102,12 +107,13 @@ export default {
       inrValue: null,
       omit: null,
       reviewPeriod: null,
-      targetInr: this.plan.targetINR,
+      targetInr: strip(this.plan.text.div),
       doses: [1.0, 2.0, 3.0, 4.0, 5.0, 6.0],
       omits: ['Not Known'].concat(makeDays(6)),
       reviewPeriods: makeDays(30),
       requiredSelect: [v => !!v || 'Please select a value'],
-      requiredDate: [v => !!v || 'Please pick a date']
+      requiredDate: [v => !!v || 'Please pick a date'],
+      todaysDate: moment().format('YYYY-MM-DD')
     }
   },
   computed: {

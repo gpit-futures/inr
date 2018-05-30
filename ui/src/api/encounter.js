@@ -1,3 +1,4 @@
+/* eslint-disable */
 import { HTTP } from '../store/http-common'
 import { ukDateToInternational } from '../utilities'
 
@@ -18,7 +19,7 @@ export async function getEncounter(newEncounter) {
 export async function createEncounter(patient, startDate, diagnosis, patientContext) {
   const uuidv1 = require('uuid/v1')
   let json = {
-    "id":"",
+    "id": "",
     "resourceType": "Encounter",
     "status": "in-progress",
     "identifier": [
@@ -51,9 +52,7 @@ export async function createEncounter(patient, startDate, diagnosis, patientCont
   let id
   await HTTP.post('encounter', json)
     .then((res) => {
-      console.log(res.data)
       json.id = res.data.issue[0].diagnostics.match("Encounter/(.*)/_")[1]
-      console.log(json.id)
     })
     .catch((error) => {
       console.error(error)

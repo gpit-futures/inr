@@ -45,10 +45,9 @@
                label="Plan End Date"
                readonly>
              </v-text-field>
-             <v-date-picker @input="selectedPlanEnd" locale="en-GB" scrollable attach>
+             <v-date-picker @input="selectedPlanEnd" :min="selectedPlanEndMax" locale="en-GB" scrollable attach>
              </v-date-picker>
           </v-menu>
-
 
         </v-flex>
       </v-layout>
@@ -87,7 +86,8 @@ import mutators from '../store/mutators'
 import { mapState } from 'vuex'
 import { internationalDateToUk } from '../utilities'
 import { createTreatmentPlan } from '../api/treatmentPlan'
-import { createEncounter, getEncounter } from '../api/encounter'
+import { createEncounter } from '../api/encounter'
+import moment from 'moment-es6'
 
 export default {
   name: 'new-treatment-plan',
@@ -113,7 +113,8 @@ export default {
       targetINR: null,
       requiredRules: [v => !!v || 'Required value'],
       newEncounter: {},
-      plan: {}
+      plan: {},
+      selectedPlanEndMax: null
 
     }
   },
@@ -145,17 +146,21 @@ export default {
     },
     async savePlan () {
       if (this.$refs.drugForm.validate()) {
-
         // create new encounter/careplan
         this.newEncounter = await createEncounter(this.patient, this.planStartDate, this.diagnosis, this.patientContext)
-        this.plan = await createTreatmentPlan(this.patient, this.newEncounter, this.targetINR, this.dosingMethod, this.testingMethod, this.diagnosis, this.planStartDate, this.planEndDate, this.drug, this.patientContext)
-        this.$store.commit(mutators.ADD_PLAN_TO_TREATMENT_PLAN, this.plan)
+        await createTreatmentPlan(this.patient, this.newEncounter, this.targetINR, this.dosingMethod, this.testingMethod, this.diagnosis, this.planStartDate, this.planEndDate, this.drug, this.patientContext)
+        this.$store.commit(mutators.ADD_PLAN_TO_TREATMENT_PLAN, this.patient)
         this.$router.push({name: 'Tests'})
       }
     }
   },
   mounted () {
     this.$store.commit(mutators.SET_TREATMENT_PLAN, null)
+  },
+  watch: {
+    planStartDate (value) {
+      this.selectedPlanEndMax = moment(value).format('YYYY-MM-DD')
+    }
   }
 }
 </script>

@@ -4,8 +4,8 @@
       <v-layout row align-baseline>
         <span class="caption">Treatment Plan:</span>
         <v-select
-            :items="planDates"
-            v-model="selectedPlanDate"
+            :items="planIDs"
+            v-model="selectedPlanID"
             label="Select"
             single-line
             hide-details
@@ -18,7 +18,7 @@
     <treatment-plan-table v-if="!addingHistorical" :test="test" :planSuggested="planSuggested"
         @save="savePlan" @cancel="cancelPlan" />
 
-    <historical v-if="addingHistorical" :plan="treatmentPlans[0]"
+    <historical v-if="addingHistorical" :plan="selectedPlan"
         @add-historical="addHistoricalRecord" @cancel-historical="cancelHistorical"/>
 
     <v-layout v-if="showButtons" row class="mt-3">
@@ -51,8 +51,7 @@ export default {
     },
     // change to create observation
     async addHistoricalRecord (record) {
-      record.id = ++this.lastId
-      // this.$store.commit(mutators.ADD_TEST_TO_PLAN, record)
+      // record.id = ++this.lastId
       await createObservation(this.patient, this.selectedPlan, this.patientContext, record)
       this.$store.commit(mutators.SET_OBSERVATIONS, this.selectedPlan)
       this.addingHistorical = false
@@ -71,17 +70,17 @@ export default {
     // change to create observation
     async savePlan () {
       this.planSuggested = false
-      this.test.id = ++this.lastId
+      // this.test.id = ++this.lastId
       await createObservation(this.patient, this.selectedPlan, this.patientContext, this.test)
       this.$store.commit(mutators.SET_OBSERVATIONS, this.selectedPlan)
     },
     copyInTreatmentValues () {
       if (this.treatmentPlans) {
-        this.selectedPlanDate = this.treatmentPlans[0].id
-
+        this.selectedPlanID = this.treatmentPlans[0].id
         let i
+        this.planIDs = []
         for (i = 0; i < this.treatmentPlans.length; i++) {
-          this.planDates.push(this.treatmentPlans[i].id);
+          this.planIDs.push(this.treatmentPlans[i].id)
         }
       }
     },
@@ -96,11 +95,11 @@ export default {
     return {
       addingInr: false,
       addingHistorical: false,
-      lastId: 2,
+      // lastId: 2,
       test: null,
       planSuggested: false,
-      planDates: [],
-      selectedPlanDate: null
+      planIDs: [],
+      selectedPlanID: null
     }
   },
   computed: {
@@ -123,8 +122,8 @@ export default {
     treatmentPlans () {
       this.copyInTreatmentValues()
     },
-    selectedPlanDate () {
-      this.$store.commit(mutators.SET_SELECTED_PLAN, this.treatmentPlans.find(i => i.id === this.selectedPlanDate))
+    selectedPlanID () {
+      this.$store.commit(mutators.SET_SELECTED_PLAN, this.treatmentPlans.find(i => i.id === this.selectedPlanID))
       this.$store.commit(mutators.SET_OBSERVATIONS, this.selectedPlan)
     }
   }

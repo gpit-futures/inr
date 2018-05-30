@@ -1,3 +1,4 @@
+/* eslint-disable */
 import { HTTP } from '../store/http-common'
 import { ukDateToInternational } from '../utilities'
 
@@ -5,7 +6,6 @@ export async function getTreatmentPlan(patient) {
   let json
   await HTTP.get('careplan/associated?associatedType=Patient&id=' + patient.id)
     .then((res) => {
-      console.log(res.data)
       json = res.data
     })
     .catch((error) => {

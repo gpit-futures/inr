@@ -1,3 +1,4 @@
+/* eslint-disable */
 import { HTTP } from '../store/http-common'
 import { ukDateToInternational } from '../utilities'
 
@@ -5,7 +6,6 @@ export async function getObservation(treatmentPlan) {
     let json
     await HTTP.get('observation/associated?associatedType=' + treatmentPlan.context.reference.replace('/', '&id='))
         .then((res) => {
-            console.log(res.data)
             json = res.data
         })
         .catch((error) => {
@@ -28,7 +28,7 @@ export async function createObservation(patient, selectedPlan, patientContext, t
         "text": {
             "status": "generated",
             "div": test.dose + ',' + test.reviewDays + ',' + ukDateToInternational(test.nextTestDate)
-          },
+        },
         "status": "final",
         "category": [
             {

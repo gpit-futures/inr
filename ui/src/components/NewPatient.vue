@@ -141,10 +141,10 @@ export default {
       this.patientDOB = internationalDateToUk(value)
       this.patientDOBVisible = false
     },
-    save () {
+    async save () {
       if (this.$refs.form.validate()) {
         let patient = this.patientContext
-        createPatient(patient)
+        await createPatient(patient)
         this.$store.commit(mutators.SET_PATIENT, patient)
         this.$router.push({name: 'NewPlan'})
       }

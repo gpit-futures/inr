@@ -24,14 +24,21 @@ export default new Vuex.Store({
   mutations: {
     /* The patient stored in the INR system - get the patient from the INR middleware - if none exists promt user.
     axios.get('../patient/' + patient.nhsNumber) */
-    [mutators.SET_PATIENT] (state, patient) {
-      state.patient = patient
+    async [mutators.SET_PATIENT] (state, patient) {
+      if (!null) {
+        state.patient = await getPatient(patient)
+      } else {
+        state.patient = patient
+      }
     },
     async [mutators.SET_PATIENT_INR] (state, patient) {
       state.patient = await getPatient(patient)
-      state.treatmentPlans = await getTreatmentPlan(patient)
-      state.selectedPlan = state.treatmentPlans[0]
-      if (state.patient === null) {
+      if (!!state.patient) {
+        state.treatmentPlans = await getTreatmentPlan(state.patient)
+        state.selectedPlan = state.treatmentPlans[0]
+      }
+
+      if (state.patient == null) {
         router.push({name: 'NewPatient'})
       } else if (state.treatmentPlans.length < 1) {
         router.push({ name: 'NewPlan' })
@@ -49,8 +56,8 @@ export default new Vuex.Store({
     [mutators.SET_SELECTED_PLAN] (state, selectedPlan) {
       state.selectedPlan = selectedPlan
     },
-    [mutators.ADD_PLAN_TO_TREATMENT_PLAN] (state, plan) {
-      state.treatmentPlans = [plan]
+    async [mutators.ADD_PLAN_TO_TREATMENT_PLAN] (state, patient) {
+      state.treatmentPlans = await getTreatmentPlan(patient)
     },
     async [mutators.SET_OBSERVATIONS] (state, treatmentPlan) {
       state.observations = await getObservation(treatmentPlan)
