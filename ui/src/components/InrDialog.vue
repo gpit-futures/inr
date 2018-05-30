@@ -87,6 +87,7 @@ export default {
         let reviewDays = 14
         let nextTestDate = ukDateAddDays(this.testDate, reviewDays)
         let record = {testDate: this.testDate, inr: this.inrValue, dose: '5', reviewDays: 14, nextTestDate}
+        // caught by addedinr() in parent.
         this.$emit('submit', record)
       }
     },

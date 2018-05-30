@@ -35,19 +35,29 @@
             label="Drug"
             @input="changedDrug"></v-select>
 
-          <v-select
-            :items="treatmentDurationList"
-            v-model="treatmentDuration"
-            label="Treatment Duration"
-            @input="changedDuration"></v-select>
+          <v-menu lazy
+             :close-on-content-click="false"
+             transition="scale-transition"
+             v-model="planEndVisible"
+             attach>
+             <v-text-field slot="activator"
+               v-model="planEndDate"
+               label="Plan End Date"
+               readonly>
+             </v-text-field>
+             <v-date-picker @input="selectedPlanEnd" locale="en-GB" scrollable attach>
+             </v-date-picker>
+          </v-menu>
+
+
         </v-flex>
       </v-layout>
     </v-form>
 
-    <v-form v-if="showWarfarin" ref="warfarinForm" lazy-validation>
+    <v-form v-if="showDrug" ref="drugForm" lazy-validation>
       <v-layout row class="mt-3">
         <v-flex xs6>
-           <div class="title mt-3 mb-2">Warfarin Details</div>
+           <div class="title mt-3 mb-2">{{this.drug}} Details</div>
            <v-select
              :items="inrValues"
              v-model="targetINR"
@@ -76,6 +86,8 @@
 import mutators from '../store/mutators'
 import { mapState } from 'vuex'
 import { internationalDateToUk } from '../utilities'
+import { createTreatmentPlan } from '../api/treatmentPlan'
+import { createEncounter, getEncounter } from '../api/encounter'
 
 export default {
   name: 'new-treatment-plan',
@@ -83,6 +95,8 @@ export default {
     return {
       planStartVisible: false,
       planStartDate: null,
+      planEndVisible: false,
+      planEndDate: null,
       diagnosisList: ['Atrial Fibrillation', 'Dilated Cardiomyopathy', 'DVT (distal, npn-surgical, no risk factors)',
         'DVT (distal, surgical, no risk factors)', 'DVT (isolated calf-vein)', 'Prosthetic Heart Valve (bioprosthetic, corrected risk factors)',
         'Prosthetic Heart Valve (bioprosthetic, mital, no risk factors)'],
@@ -91,24 +105,34 @@ export default {
       drug: null,
       treatmentDurationList: [],
       treatmentDuration: null,
-      showWarfarin: false,
+      showDrug: false,
       dosingMethod: null,
       dosingMethods: ['Coventry Maintenance', 'Hilingdon Maintenance', 'Manual Dosing'],
       testingMethod: null,
       testingMethods: ['PoCT', 'Lab'],
       targetINR: null,
-      requiredRules: [v => !!v || 'Required value']
+      requiredRules: [v => !!v || 'Required value'],
+      newEncounter: {},
+      plan: {}
+
     }
   },
   computed: {
     ...mapState({
-      inrValues: state => state.static.inrValues
+      inrValues: state => state.static.inrValues,
+      patient: state => state.patient,
+      patientContext: state => state.patientContext,
+      treatmentPlans: state => state.treatmentPlans
     })
   },
   methods: {
     selectedPlanStart (value) {
       this.planStartDate = internationalDateToUk(value)
       this.planStartVisible = false
+    },
+    selectedPlanEnd (value) {
+      this.planEndDate = internationalDateToUk(value)
+      this.planEndVisible = false
     },
     changedDiagnosis () {
       this.drug = null
@@ -117,25 +141,15 @@ export default {
       this.treatmentDurationList = []
     },
     changedDrug () {
-      this.treatmentDuration = null
-      this.treatmentDurationList = ['indefinite', '6 months']
+      this.showDrug = true
     },
-    changedDuration () {
-      this.showWarfarin = true
-    },
-    savePlan () {
-      if (this.$refs.warfarinForm.validate()) {
-        let treatmentPlan = {
-          planDate: this.planStartDate,
-          diagnosis: this.diagnosis,
-          drug: this.drug,
-          targetINR: this.targetINR,
-          dosingMethod: this.dosingMethod,
-          testingMethod: this.testingMethod,
-          treatmentDuration: this.treatmentDuration,
-          items: []
-        }
-        this.$store.commit(mutators.SET_TREATMENT_PLAN, treatmentPlan)
+    async savePlan () {
+      if (this.$refs.drugForm.validate()) {
+
+        // create new encounter/careplan
+        this.newEncounter = await createEncounter(this.patient, this.planStartDate, this.diagnosis, this.patientContext)
+        this.plan = await createTreatmentPlan(this.patient, this.newEncounter, this.targetINR, this.dosingMethod, this.testingMethod, this.diagnosis, this.planStartDate, this.planEndDate, this.drug, this.patientContext)
+        this.$store.commit(mutators.ADD_PLAN_TO_TREATMENT_PLAN, this.plan)
         this.$router.push({name: 'Tests'})
       }
     }

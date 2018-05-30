@@ -9,15 +9,16 @@
           <v-layout row class="mt-3">
             <v-flex xs6 class="pr-3">
               <div class="title">Demographics</div>
-              <v-text-field v-model="identifier" label="Patient Number" :rules="requiredRules"/>
-              <v-text-field v-model="nhsNumber" label="NHS Number" :rules="requiredRules"/>
+              <v-text-field v-model="identifier" label="Patient Number" disabled/>
+              <v-text-field v-model="nhsNumber" label="NHS Number" :rules="requiredRules" disabled/>
               <v-select
                 :items="titles"
                 v-model="patientTitle"
                 label="Title"
-                :rules="requiredRules"></v-select>
-              <v-text-field v-model="patientLastName" label="Last Name" :rules="requiredRules" />
-              <v-text-field v-model="patientFirstName" label="First Name" :rules="requiredRules" />
+                :rules="requiredRules"
+                disabled></v-select>
+              <v-text-field v-model="patientLastName" label="Last Name" :rules="requiredRules" disabled/>
+              <v-text-field v-model="patientFirstName" label="First Name" :rules="requiredRules" disabled/>
 
               <v-menu lazy
                  :close-on-content-click="false"
@@ -28,53 +29,57 @@
                    v-model="patientDOB"
                    label="Born"
                    :rules="requiredRules"
-                   readonly>
+                   readonly disabled>
                  </v-text-field>
-                 <v-date-picker @input="selectedDOB" :value="patientDOBpicker"  scrollable attach>
+                 <v-date-picker @input="selectedDOB" :value="patientDOBpicker"  scrollable attach disabled>
                  </v-date-picker>
               </v-menu>
               <v-select
                 :items="sexes"
                 v-model="patientSex"
                 label="Sex"
-                :rules="requiredRules"></v-select>
-
+                :rules="requiredRules"
+                disabled></v-select>
               <v-select
                 :items="genders"
                 v-model="patientGender"
                 label="Gender"
-                :rules="requiredRules"></v-select>
+                :rules="requiredRules"
+                disabled></v-select>
               <v-select
                 :items="ethnicities"
                 v-model="patientEthicity"
                 label="Ethnicity"
-                :rules="requiredRules"></v-select>
+                :rules="requiredRules"
+                disabled></v-select>
               <v-select
                 :items="languages"
                 v-model="patientLanguage"
                 label="First Language"
-                :rules="requiredRules"></v-select>
+                :rules="requiredRules"
+                disabled></v-select>
               <v-select
                 :items="maritalStatuses"
                 v-model="patientMaritalStatus"
                 label="Marital Status"
-                :rules="requiredRules"></v-select>
+                :rules="requiredRules"
+                disabled></v-select>
             </v-flex>
             <v-flex xs6 class="pl-3">
               <div class="title">Contact</div>
-              <v-text-field v-model="contactAddress1" label="Address Line 1" :rules="requiredRules" />
-              <v-text-field v-model="contactAddress2" label="Address Line 2" />
-              <v-text-field v-model="contactAddress3" label="Address Line 3" />
-              <v-text-field v-model="contactTown" label="Town / City"/>
-              <v-text-field v-model="contactPostcode" label="Postcode" :rules="requiredRules" />
-              <v-text-field v-model="contactTelephone" label="Home Tel" />
-              <v-text-field v-model="contactMobile" label="Mobile" />
-              <v-text-field v-model="contactEmail" label="Email" />
+              <v-text-field v-model="contactAddress1" label="Address Line 1" :rules="requiredRules" disabled/>
+              <v-text-field v-model="contactAddress2" label="Address Line 2" disabled/>
+              <v-text-field v-model="contactAddress3" label="Address Line 3" disabled/>
+              <v-text-field v-model="contactTown" label="Town / City" disabled/>
+              <v-text-field v-model="contactPostcode" label="Postcode" :rules="requiredRules" disabled/>
+              <v-text-field v-model="contactTelephone" label="Home Tel" disabled/>
+              <v-text-field v-model="contactMobile" label="Mobile" disabled/>
+              <v-text-field v-model="contactEmail" label="Email" disabled/>
             </v-flex>
           </v-layout>
         </v-form>
         <v-layout row justify-end>
-          <v-btn color="primary" @click.stop="save">Save</v-btn>
+          <v-btn color="primary" @click.stop="save">Add Patient to INR System</v-btn>
         </v-layout>
       </v-tab-item>
     </v-tabs>
@@ -86,6 +91,7 @@ import moment from 'moment-es6'
 import { mapState } from 'vuex'
 import mutators from '../store/mutators'
 import { internationalDateToUk } from '../utilities'
+import { createPatient } from '../api/patient'
 
 export default {
   name: 'new-patient',
@@ -99,8 +105,8 @@ export default {
       activeTab: null,
       titles: ['Mr', 'Mrs', 'Miss'],
       // counties: ['North Yorkshire', 'West Yorkshire', 'East Yorkshire', 'South Yorkshire'],
-      sexes: ['Male', 'Female'],
-      genders: ['Male', 'Female'],
+      sexes: ['male', 'female'],
+      genders: ['male', 'female'],
       ethnicities: ['White', 'Mixed', 'Asian or Asian British', 'Black or Black British', 'Other Ethnic Group'],
       languages: ['English', 'Catalan', 'Gujarati', 'Hindi', 'Polish'],
       maritalStatuses: ['Single', 'Married', 'Divorced', 'Not Disclosed'],
@@ -137,44 +143,31 @@ export default {
     },
     save () {
       if (this.$refs.form.validate()) {
-        let patient = {
-          title: this.patientTitle,
-          firstName: this.patientFirstName,
-          lastName: this.patientLastName.toUpperCase(),
-          gender: this.patientGender,
-          phone: this.contactTelephone,
-          pasNumber: this.identifier,
-          nhsNumber: this.nhsNumber,
-          dateOfBirth: moment(this.patientDOBpicker).format('YYYY-MM-DD'),
-          address: {
-            line1: this.contactAddress1,
-            line2: this.contactAddress2,
-            line3: this.contactAddress3,
-            line4: this.contactTown,
-            postcode: this.contactPostcode
-          }
-        }
+        let patient = this.patientContext
+        createPatient(patient)
         this.$store.commit(mutators.SET_PATIENT, patient)
         this.$router.push({name: 'NewPlan'})
       }
     },
     copyContextFields () {
       if (this.patientContext) {
-        this.patientTitle = this.patientContext.title
-        this.patientLastName = this.patientContext.lastName
-        this.patientFirstName = this.patientContext.firstName
+        this.patientTitle = this.patientContext.name[0].prefix[0]
+        this.patientLastName = this.patientContext.name[0].family
+        this.patientFirstName = this.patientContext.name[0].given[0]
         this.patientGender = this.patientContext.gender
         this.patientSex = this.patientContext.gender // ?? no field
-        this.contactTelephone = this.patientContext.phone
-        this.identifier = this.patientContext.pasNumber
-        this.nhsNumber = this.patientContext.nhsNumber
-        this.patientDOB = moment(this.patientContext.dateOfBirth).format('DD-MMM-YYYY')
-        this.patientDOBpicker = moment(this.patientContext.dateOfBirth).format('YYYY-MM-DD')
-        this.contactAddress1 = this.patientContext.address.line1
-        this.contactAddress2 = this.patientContext.address.line2
-        this.contactAddress3 = this.patientContext.address.line3
-        this.contactTown = this.patientContext.address.line4
-        this.contactPostcode = this.patientContext.address.postcode
+        this.contactTelephone = this.patientContext.telecom[0].value
+        this.identifier = this.patientContext.id
+        this.nhsNumber = this.patientContext.identifier[0].value
+        this.patientDOB = moment(this.patientContext.birthDate).format('DD-MMM-YYYY')
+        this.patientDOBpicker = moment(this.patientContext.birthDate).format('YYYY-MM-DD')
+        this.contactAddress1 = this.patientContext.address[0].line[0]
+        this.contactAddress2 = this.patientContext.address[0].line[1]
+        this.contactAddress3 = this.patientContext.address[0].district
+        this.contactTown = this.patientContext.address[0].city
+        this.contactPostcode = this.patientContext.address[0].postalCode
+        this.contactMobile = this.patientContext.telecom[0].value
+        this.contactEmail = this.patientContext.telecom[1].value
       }
     }
   },

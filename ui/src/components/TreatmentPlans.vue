@@ -14,10 +14,11 @@
       </v-layout>
     </v-card>
 
-    <treatment-plan-table v-if="!addingHistorical" :plan="treatmentPlan" :test="test" :planSuggested="planSuggested"
+    <!-- link to observations for selected treatment plan -->
+    <treatment-plan-table v-if="!addingHistorical" :test="test" :planSuggested="planSuggested"
         @save="savePlan" @cancel="cancelPlan" />
 
-    <historical v-if="addingHistorical" :plan="treatmentPlan"
+    <historical v-if="addingHistorical" :plan="treatmentPlans[0]"
         @add-historical="addHistoricalRecord" @cancel-historical="cancelHistorical"/>
 
     <v-layout v-if="showButtons" row class="mt-3">
@@ -34,7 +35,9 @@ import InrDialog from './InrDialog'
 import TreatmentPlanTable from './TreatmentPlanTable'
 import Historical from './Historical'
 import { mapState } from 'vuex'
+import moment from 'moment-es6'
 import mutators from '../store/mutators'
+import { createObservation } from '../api/observation'
 
 export default {
   name: 'treatment-plans',
@@ -46,9 +49,12 @@ export default {
     addHistorical () {
       this.addingHistorical = true
     },
-    addHistoricalRecord (record) {
+    // change to create observation
+    async addHistoricalRecord (record) {
       record.id = ++this.lastId
-      this.$store.commit(mutators.ADD_TEST_TO_PLAN, record)
+      // this.$store.commit(mutators.ADD_TEST_TO_PLAN, record)
+      await createObservation(this.patient, this.selectedPlan, this.patientContext, record)
+      this.$store.commit(mutators.SET_OBSERVATIONS, this.selectedPlan)
       this.addingHistorical = false
     },
     cancelHistorical () {
@@ -62,16 +68,28 @@ export default {
     cancelPlan () {
       this.planSuggested = false
     },
-    savePlan () {
+    // change to create observation
+    async savePlan () {
       this.planSuggested = false
       this.test.id = ++this.lastId
-      this.$store.commit(mutators.ADD_TEST_TO_PLAN, this.test)
+      await createObservation(this.patient, this.selectedPlan, this.patientContext, this.test)
+      this.$store.commit(mutators.SET_OBSERVATIONS, this.selectedPlan)
     },
     copyInTreatmentValues () {
-      if (this.treatmentPlan) {
-        this.selectedPlanDate = this.treatmentPlan.planDate
-        this.planDates = [this.treatmentPlan.planDate]
+      if (this.treatmentPlans) {
+        this.selectedPlanDate = this.treatmentPlans[0].id
+
+        let i
+        for (i = 0; i < this.treatmentPlans.length; i++) {
+          this.planDates.push(this.treatmentPlans[i].id);
+        }
       }
+    },
+    date (value) {
+      return moment(value).format('DD-MMM-YYYY')
+    },
+    strip (value) {
+      return value.replace(/<[^>]+>/ig, '')
     }
   },
   data () {
@@ -87,7 +105,11 @@ export default {
   },
   computed: {
     ...mapState({
-      treatmentPlan: state => state.treatmentPlan
+      treatmentPlans: state => state.treatmentPlans,
+      patient: state => state.patient,
+      patientContext: state => state.patientContext,
+      selectedPlan: state => state.selectedPlan,
+      observations: state => state.observations
     }),
     showButtons () {
       return (!this.planSuggested) && (!this.addingHistorical)
@@ -95,10 +117,15 @@ export default {
   },
   mounted () {
     this.copyInTreatmentValues()
+    this.$store.commit(mutators.SET_OBSERVATIONS, this.selectedPlan)
   },
   watch: {
-    treatmentPlan () {
+    treatmentPlans () {
       this.copyInTreatmentValues()
+    },
+    selectedPlanDate () {
+      this.$store.commit(mutators.SET_SELECTED_PLAN, this.treatmentPlans.find(i => i.id === this.selectedPlanDate))
+      this.$store.commit(mutators.SET_OBSERVATIONS, this.selectedPlan)
     }
   }
 }
@@ -106,7 +133,7 @@ export default {
 
 <style scoped>
 .date-select {
-  max-width: 160px;
+  max-width: 25%;
 }
 
 .date-row {

@@ -11,11 +11,13 @@
     "build": "node build/build.js"
   },
   "dependencies": {
+    "axios": "^0.18.0",
     "dw-client-connector": "^0.2.0",
     "material-design-icons-iconfont": "^3.0.3",
     "moment": "^2.22.1",
     "moment-es6": "^1.0.0",
     "npm": "^6.0.1",
+    "uuid": "^3.2.1",
     "vue": "^2.5.2",
     "vue-router": "^3.0.1",
     "vuetify": "^1.0.17",
