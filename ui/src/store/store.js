@@ -4,9 +4,7 @@ import mutators from './mutators'
 import router from '../router'
 import { getPatient } from '../api/patient'
 import { getTreatmentPlan } from '../api/treatmentPlan'
-import { ukDateToInternational } from '../utilities'
-import { stat } from 'fs';
-import { getObservation } from '../api/observation';
+import { getObservation } from '../api/observation'
 
 Vue.use(Vuex)
 

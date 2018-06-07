@@ -12,30 +12,32 @@
 </template>
 
 <script>
-import PatientBanner from './components/PatientBanner'
-import mutators from './store/mutators'
-import { DwClientConnector } from 'dw-client-connector'
+import PatientBanner from "./components/PatientBanner";
+import mutators from "./store/mutators";
 
 export default {
-  name: 'App',
+  name: "App",
   components: {
     PatientBanner
   },
-  mounted () {
-    console.log('------initialised INR')
+  mounted() {
+    console.log("------initialised INR");
 
-    DwClientConnector.subscribe('patient-context:changed', (patient) => {
-      console.log('INR patient-context:changed', patient)
-      this.$store.commit(mutators.SET_PATIENT_CONTEXT, patient)
-      this.$store.commit(mutators.SET_PATIENT_INR, patient)
-    })
-
-    DwClientConnector.subscribe('patient-context:ended', () => {
-      console.log('INR patient-context:ended')
-      this.$store.commit(mutators.SET_PATIENT_CONTEXT, null)
-      this.$store.commit(mutators.SET_PATIENT, null)
-      this.$router.push({name: 'LandingPage'})
-    })
+    window.isElectron = function() {
+      return "Bridge" in window;
+    };
+    if (isElectron()) {
+      console.log("is electron app");
+      window.Bridge.updatePatientContext = patient => {
+        let event = 'INR patient-context:changed'
+        if (patient === null) {
+          event = 'INR patient-context:ended'
+        }
+        console.log(event, patient);
+        this.$store.commit(mutators.SET_PATIENT_CONTEXT, patient);
+        this.$store.commit(mutators.SET_PATIENT_INR, patient);
+      };
+    }
   }
-}
+};
 </script>
