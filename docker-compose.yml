@@ -1,5 +1,13 @@
 version: "3"
 services:
+   inr-ui:
+      image: gpitfutures/inr_ui:latest
+      ports:
+         - 80:80
+      networks:
+         - inr-network
+      depends_on:
+         - inr-middletier
    inr-middletier:
       image: gpitfutures/inr_middletier:latest
       ports:
