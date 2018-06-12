@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -24,6 +25,7 @@ public class AbstractController<DTO extends ResponseDTO> {
 	}
 	
 	@GetMapping(path="/associated")
+	@PreAuthorize("hasAuthority('FOO_READ')")
 	public ResponseEntity<List<DTO>> getByAssociation(@RequestParam String associatedType, @RequestParam String id) {
 		List<DTO> dtos = restService.readAssociated(associatedType, id);
 		return dtos.isEmpty() ? 
@@ -32,6 +34,7 @@ public class AbstractController<DTO extends ResponseDTO> {
 	}
 
 	@GetMapping
+	@PreAuthorize("hasAuthority('FOO_READ')")
 	public ResponseEntity<DTO> read(@RequestParam String id) throws NotFoundException {
 		DTO dto = restService.read(id);
 		return dto == null ? 
@@ -40,11 +43,13 @@ public class AbstractController<DTO extends ResponseDTO> {
 	}
 	
 	@PostMapping
+	@PreAuthorize("hasAuthority('FOO_WRITE')")
 	public ResponseDTO create(@RequestBody DTO dto) throws Exception {
 		return restService.create(dto);
 	}
 	
 	@PutMapping
+	@PreAuthorize("hasAuthority('FOO_WRITE')")
 	public ResponseDTO update(@RequestBody DTO dto) throws Exception {
 		return restService.update(dto);
 	}
