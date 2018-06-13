@@ -14,10 +14,12 @@ export default new Vuex.Store({
     patientContext: null,
     treatmentPlans: [],
     selectedPlan: null,
+    selectedObservation: null,
     observations: [],
     static: {
       inrValues: ['1.8', '1.9', '2.0', '2.1', '2.2', '2.3', '2.4', '99']
-    }
+    },
+    token: null
   },
   mutations: {
     /* The patient stored in the INR system - get the patient from the INR middleware - if none exists promt user.
@@ -53,6 +55,12 @@ export default new Vuex.Store({
     },
     [mutators.SET_SELECTED_PLAN] (state, selectedPlan) {
       state.selectedPlan = selectedPlan
+    },
+    [mutators.SET_SELECTED_OBSERVATION] (state, selectedObservation) {
+      state.selectedObservation = selectedObservation
+    },
+    [mutators.SET_TOKEN] (state, token) {
+      state.token = token
     },
     async [mutators.ADD_PLAN_TO_TREATMENT_PLAN] (state, patient) {
       state.treatmentPlans = await getTreatmentPlan(patient)

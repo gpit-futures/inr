@@ -1,9 +1,11 @@
 /* eslint-disable */
 import { HTTP } from '../store/http-common'
 import { ukDateToInternational } from '../utilities'
+import store from '../store/store';
 
 export async function getObservation(treatmentPlan) {
     let json
+    HTTP.defaults.headers.common['Authorization'] = 'Bearer ' + store.state.token.access_token;
     await HTTP.get('observation/associated?associatedType=' + treatmentPlan.context.reference.replace('/', '&id='))
         .then((res) => {
             json = res.data
@@ -98,6 +100,7 @@ export async function createObservation(patient, selectedPlan, patientContext, t
             }
         ]
     }
+    HTTP.defaults.headers.common['Authorization'] = 'Bearer ' + store.state.token.access_token;
     await HTTP.post('observation', json)
         .then((res) => {
             console.log(res.data)

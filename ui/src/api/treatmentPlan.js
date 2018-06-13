@@ -1,9 +1,11 @@
 /* eslint-disable */
 import { HTTP } from '../store/http-common'
 import { ukDateToInternational } from '../utilities'
+import store from '../store/store';
 
 export async function getTreatmentPlan(patient) {
   let json
+  HTTP.defaults.headers.common['Authorization'] = 'Bearer ' + store.state.token.access_token;
   await HTTP.get('careplan/associated?associatedType=Patient&id=' + patient.id)
     .then((res) => {
       json = res.data
@@ -76,6 +78,7 @@ export async function createTreatmentPlan(patient, encounter, targetINR, dosingM
       }
     ]
   }
+  HTTP.defaults.headers.common['Authorization'] = 'Bearer ' + store.state.token.access_token;
   await HTTP.post('careplan', json)
     .then((res) => {
       console.log(res.data)

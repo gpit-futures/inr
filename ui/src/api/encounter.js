@@ -1,9 +1,11 @@
 /* eslint-disable */
 import { HTTP } from '../store/http-common'
 import { ukDateToInternational } from '../utilities'
+import store from '../store/store';
 
 export async function getEncounter(newEncounter) {
   let json
+  HTTP.defaults.headers.common['Authorization'] = 'Bearer ' + store.state.token.access_token;
   await HTTP.get('encounter?id=' + newEncounter.identifier[0].value)
     .then((res) => {
       console.log(res.data)
@@ -50,6 +52,7 @@ export async function createEncounter(patient, startDate, diagnosis, patientCont
     }],
   }
   let id
+  HTTP.defaults.headers.common['Authorization'] = 'Bearer ' + store.state.token.access_token;
   await HTTP.post('encounter', json)
     .then((res) => {
       json.id = res.data.issue[0].diagnostics.match("Encounter/(.*)/_")[1]

@@ -29,13 +29,19 @@ export default {
     if (isElectron()) {
       console.log("is electron app");
       window.Bridge.updatePatientContext = patient => {
-        let event = 'INR patient-context:changed'
-        if (patient === null) {
-          event = 'INR patient-context:ended'
-        }
-        console.log(event, patient);
         this.$store.commit(mutators.SET_PATIENT_CONTEXT, patient);
         this.$store.commit(mutators.SET_PATIENT_INR, patient);
+      };
+    }
+
+    if (isElectron()) {
+      console.log("is electron app");
+      window.Bridge.updateTokenContext = token => {
+        console.log('token set: ')
+        console.log(token)
+        this.$store.commit(mutators.SET_TOKEN, token);
+        console.log('token get: ')
+        console.log(this.$store.state.token)
       };
     }
   }
