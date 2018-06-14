@@ -78,6 +78,7 @@ public abstract class RestService<DTO extends ResponseDTO> {
 	}
 	
 	private ResponseDTO merge(DTO dto) throws Exception {
+		
 		boolean isUpdate = dto.getId() != null;
 		String id = dto.getIdentifier()[0].getValue();
 		DTO originalDto = read(id);
@@ -95,6 +96,9 @@ public abstract class RestService<DTO extends ResponseDTO> {
         try {
 	        response = restTemplate.exchange(
 	        		url, isUpdate ? HttpMethod.PUT : HttpMethod.POST, new HttpEntity<DTO>(dto, headers), ResponseDTO.class);
+	        
+	        dto = read(dto.getIdentifier()[0].getValue());
+	        
         } catch (RestClientException e) {
         	throw new Exception();
         }
