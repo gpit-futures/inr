@@ -4,7 +4,6 @@ public class Meta {
 
 	private Long versionId;
 	private String lastUpdated;
-	private String[] profile;
 	
 	public Long getVersionId() {
 		return versionId;
@@ -18,12 +17,5 @@ public class Meta {
 	}
 	public void setLastUpdated(String lastUpdated) {
 		this.lastUpdated = lastUpdated;
-	}
-	
-	public String[] getProfile() {
-		return profile;
-	}
-	public void setProfile(String[] profile) {
-		this.profile = profile;
 	}
 }

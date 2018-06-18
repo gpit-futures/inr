@@ -15,11 +15,15 @@
     </v-card>
 
     <!-- link to observations for selected treatment plan -->
-    <treatment-plan-table v-if="!addingHistorical" :test="test" :planSuggested="planSuggested"
-        @save="savePlan" @cancel="cancelPlan" />
+    <treatment-plan-table v-if="!(addingHistorical || updatingHistorical)" :test="test" :planSuggested="planSuggested"
+        @save="savePlan" @cancel="cancelPlan" @update-historical="updateHistorical" />
 
     <historical v-if="addingHistorical" :plan="selectedPlan"
         @add-historical="addHistoricalRecord" @cancel-historical="cancelHistorical"/>
+
+    <!-- Update INR reading -->
+    <update-inr v-if="updatingHistorical" :plan="selectedPlan"
+        @update-historical="updateHistoricalRecord" @cancel-update="cancelUpdateHistorical"/>
 
     <v-layout v-if="showButtons" row class="mt-3">
       <v-btn color="primary" @click="addINR">Add New INR <v-icon right>playlist_add</v-icon></v-btn>
@@ -32,16 +36,17 @@
 
 <script>
 import InrDialog from './InrDialog'
+import UpdateInr from './UpdateInr'
 import TreatmentPlanTable from './TreatmentPlanTable'
 import Historical from './Historical'
 import { mapState } from 'vuex'
 import moment from 'moment-es6'
 import mutators from '../store/mutators'
-import { createObservation } from '../api/observation'
+import { createObservation, updateObservation } from '../api/observation'
 
 export default {
   name: 'treatment-plans',
-  components: {InrDialog, TreatmentPlanTable, Historical},
+  components: {InrDialog, TreatmentPlanTable, Historical, UpdateInr},
   methods: {
     addINR () {
       this.addingInr = true
@@ -51,13 +56,24 @@ export default {
     },
     // change to create observation
     async addHistoricalRecord (record) {
-      // record.id = ++this.lastId
       await createObservation(this.patient, this.selectedPlan, this.patientContext, record)
       this.$store.commit(mutators.SET_OBSERVATIONS, this.selectedPlan)
       this.addingHistorical = false
     },
     cancelHistorical () {
       this.addingHistorical = false
+    },
+    updateHistorical () {
+      this.updatingHistorical = true
+    },
+    // change to update observation
+    async updateHistoricalRecord (record) {
+      await updateObservation(record)
+      this.$store.commit(mutators.SET_OBSERVATIONS, this.selectedPlan)
+      this.updatingHistorical = false
+    },
+    cancelUpdateHistorical () {
+      this.updatingHistorical = false
     },
     addedINR (plan) {
       this.addingInr = false
@@ -95,7 +111,7 @@ export default {
     return {
       addingInr: false,
       addingHistorical: false,
-      // lastId: 2,
+      updatingHistorical: false,
       test: null,
       planSuggested: false,
       planIDs: [],

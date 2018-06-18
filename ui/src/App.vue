@@ -12,38 +12,40 @@
 </template>
 
 <script>
-import PatientBanner from "./components/PatientBanner";
-import mutators from "./store/mutators";
+import PatientBanner from './components/PatientBanner'
+import mutators from './store/mutators'
 
 export default {
-  name: "App",
+  name: 'App',
   components: {
     PatientBanner
   },
-  mounted() {
-    console.log("------initialised INR");
+  mounted () {
+    console.log('------initialised INR')
 
-    window.isElectron = function() {
-      return "Bridge" in window;
-    };
-    if (isElectron()) {
-      console.log("is electron app");
+    if (this.isElectron()) {
+      console.log('is electron app')
       window.Bridge.updatePatientContext = patient => {
-        this.$store.commit(mutators.SET_PATIENT_CONTEXT, patient);
-        this.$store.commit(mutators.SET_PATIENT_INR, patient);
-      };
+        this.$store.commit(mutators.SET_PATIENT_CONTEXT, patient)
+        this.$store.commit(mutators.SET_PATIENT_INR, patient)
+      }
     }
 
-    if (isElectron()) {
-      console.log("is electron app");
+    if (this.isElectron()) {
+      console.log('is electron app')
       window.Bridge.updateTokenContext = token => {
         console.log('token set: ')
         console.log(token)
-        this.$store.commit(mutators.SET_TOKEN, token);
+        this.$store.commit(mutators.SET_TOKEN, token)
         console.log('token get: ')
         console.log(this.$store.state.token)
-      };
+      }
+    }
+  },
+  methods: {
+    isElectron () {
+      return 'Bridge' in window
     }
   }
-};
+}
 </script>

@@ -17,7 +17,7 @@ export default new Vuex.Store({
     selectedObservation: null,
     observations: [],
     static: {
-      inrValues: ['1.8', '1.9', '2.0', '2.1', '2.2', '2.3', '2.4', '99']
+      inrValues: [1.8, 1.9, 2.0, 2.1, 2.2, 2.3, 2.4, 99]
     },
     token: null
   },
@@ -25,7 +25,7 @@ export default new Vuex.Store({
     /* The patient stored in the INR system - get the patient from the INR middleware - if none exists promt user.
     axios.get('../patient/' + patient.nhsNumber) */
     async [mutators.SET_PATIENT] (state, patient) {
-      if (!null) {
+      if (patient) {
         state.patient = await getPatient(patient)
       } else {
         state.patient = patient
@@ -33,7 +33,7 @@ export default new Vuex.Store({
     },
     async [mutators.SET_PATIENT_INR] (state, patient) {
       state.patient = await getPatient(patient)
-      if (!!state.patient) {
+      if (state.patient) {
         state.treatmentPlans = await getTreatmentPlan(state.patient)
         state.selectedPlan = state.treatmentPlans[0]
       }

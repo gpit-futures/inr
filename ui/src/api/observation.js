@@ -17,6 +17,20 @@ export async function getObservation(treatmentPlan) {
     return json
 }
 
+export async function updateObservation(observation) {
+    let json = observation
+    HTTP.defaults.headers.common['Authorization'] = 'Bearer ' + store.state.token.access_token;
+    await HTTP.put('observation', json)
+        .then((res) => {
+            console.log(res.data)
+        })
+        .catch((error) => {
+            console.error(error)
+            json = null
+        })
+    return json
+}
+
 export async function createObservation(patient, selectedPlan, patientContext, test) {
     const uuidv1 = require('uuid/v1')
     let json = {

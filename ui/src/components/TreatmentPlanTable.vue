@@ -4,12 +4,13 @@
       <v-layout row v-if="observations === null" class="purple darken-1 white--text text-xs-center">
         <v-flex xs12 py-1>This patient has no recorded treatments since the treatment plan's start date: {{selectedPlan.period.start | date}}</v-flex>
       </v-layout>
-      <v-layout row  v-else class="purple darken-1 white--text text-xs-center">
+      <v-layout row v-else class="purple darken-1 white--text text-xs-center">
         <v-flex xs2 class="py-1">Test Date</v-flex>
         <v-flex xs2 class="py-1">INR</v-flex>
         <v-flex xs3 class="py-1">Dose (mg/day)</v-flex>
         <v-flex xs3 class="py-1">Review days</v-flex>
         <v-flex xs2 class="py-1">Next Test Date</v-flex>
+        <v-flex xs2 class="py-1">Edit</v-flex>
       </v-layout>
       <transition-group name="tests">
         <v-layout row v-for="row in observations" :key="row.id" class="date-row text-xs-center">
@@ -18,6 +19,7 @@
           <v-flex xs3 class="py-1">{{strip(row.text.div.split(',')[0])}}</v-flex>
           <v-flex xs3 class="py-1">{{strip(row.text.div.split(',')[1])}}</v-flex>
           <v-flex xs2 class="py-1">{{strip(row.text.div.split(',')[2]) | date}}</v-flex>
+          <v-flex xs2 class="py-1"><v-btn color="primary" @click="updateHistorical(row)">Edit Record <v-icon right>edit</v-icon></v-btn></v-flex>
         </v-layout>
       </transition-group>
 
@@ -56,6 +58,7 @@
 import SuggestedPlan from './SuggestedPlan'
 import moment from 'moment-es6'
 import { mapState } from 'vuex'
+import mutators from '../store/mutators'
 
 export default {
   name: 'treatment-plan-table',
@@ -68,6 +71,11 @@ export default {
     cancelPlan () {
       this.$emit('cancel')
     },
+    updateHistorical (selectedObservation) {
+      this.$store.commit(mutators.SET_SELECTED_OBSERVATION, selectedObservation)
+      console.log(selectedObservation)
+      this.$emit('update-historical', selectedObservation)
+    },
     strip (value) {
       return value.replace(/<[^>]+>/ig, '')
     }
@@ -75,7 +83,8 @@ export default {
   computed: {
     ...mapState({
       observations: state => state.observations,
-      selectedPlan: state => state.selectedPlan
+      selectedPlan: state => state.selectedPlan,
+      selectedObservation: state => state.selectedObservation
     })
   },
   filters: {

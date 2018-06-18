@@ -1,7 +1,13 @@
 <template>
   <v-form ref="historicalForm" lazy-validation>
     <v-layout row mb-1>
-      <span class="title">Historical Treatment</span>
+      <span class="title">Update Inr</span><br>
+      {{selectedObservation}}<br>
+      date: {{date}}<br>
+      Inr Value: {{selectedObservation.valueQuantity.value}}<br>
+      dose: {{dose}}<br>
+      review period: {{reviewPeriod}}<br>
+      target Inr: {{targetInr}}
     </v-layout>
 
     <v-layout row class="purple darken-1 white--text text-xs-center">
@@ -32,7 +38,7 @@
       <v-flex xs2 pa-2>
         <v-select
           :items="inrValues"
-          v-model="inrValue"
+          v-model="selectedObservation.valueQuantity.value"
           label="Select INR"
           :rules="requiredSelect"
         ></v-select>
@@ -82,6 +88,7 @@
 import { mapState } from 'vuex'
 import { internationalDateToUk, ukDateAddDays } from '../utilities'
 import moment from 'moment-es6'
+import mutators from '../store/mutators'
 
 let makeDays = function (max) {
   let result = [{text: 'Day 1', value: 1}]
@@ -91,29 +98,31 @@ let makeDays = function (max) {
   return result
 }
 
-let strip = function (value) {
-  return value.replace(/<[^>]+>/ig, '').split(',')[0]
+let strip = function (value, number) {
+  return value.replace(/<[^>]+>/ig, '').split(',')[number]
 }
 
 export default {
-  name: 'historical',
+  name: 'update-inr',
   props: ['plan'],
   data () {
     return {
       dateVisible: false,
-      date: null,
-      dose: null,
       dateFmt: null,
-      inrValue: null,
-      omit: null,
-      reviewPeriod: null,
-      targetInr: Number(strip(this.$store.state.selectedPlan.text.div, 0)),
+      omit: 1,
       doses: [1.0, 2.0, 3.0, 4.0, 5.0, 6.0],
       omits: ['Not Known'].concat(makeDays(6)),
       reviewPeriods: makeDays(30),
       requiredSelect: [v => !!v || 'Please select a value'],
       requiredDate: [v => !!v || 'Please pick a date'],
-      todaysDate: moment().format('YYYY-MM-DD')
+      todaysDate: moment().format('YYYY-MM-DD'),
+      selectedObservation: this.$store.state.selectedObservation,
+      date: internationalDateToUk(this.$store.state.selectedObservation.effectiveDateTime),
+      inrValue: this.$store.state.selectedObservation.valueQuantity.value,
+      dose: Number(strip(this.$store.state.selectedObservation.text.div, 0)),
+      reviewPeriod: Number(strip(this.$store.state.selectedObservation.text.div, 1)),
+      targetInr: Number(strip(this.$store.state.selectedPlan.text.div, 0))
+
     }
   },
   computed: {
@@ -125,19 +134,20 @@ export default {
     selectedDate (value) {
       this.dateFmt = value
       this.date = internationalDateToUk(value)
+      this.selectedObservation.effectiveDateTime = value
       this.dateVisible = false
     },
     save () {
       if (this.$refs.historicalForm.validate()) {
         let nextTestDate = ukDateAddDays(this.date, this.reviewPeriod)
-        let historical = {
-          testDate: this.date, inr: this.inrValue, dose: this.dose, reviewDays: this.reviewPeriod, nextTestDate
-        }
-        this.$emit('add-historical', historical)
+        this.selectedObservation.text.div = this.dose + ',' + this.reviewPeriod + ',' + nextTestDate
+        this.selectedObservation.effectiveDateTime = this.selectedObservation.effectiveDateTime
+        this.$store.commit(mutators.SET_SELECTED_OBSERVATION, this.selectedObservation)
+        this.$emit('update-historical', this.selectedObservation)
       }
     },
     cancel () {
-      this.$emit('cancel-historical')
+      this.$emit('cancel-update')
     }
   }
 }
