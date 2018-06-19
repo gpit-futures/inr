@@ -2,12 +2,6 @@
   <v-form ref="historicalForm" lazy-validation>
     <v-layout row mb-1>
       <span class="title">Update Inr</span><br>
-      {{selectedObservation}}<br>
-      date: {{date}}<br>
-      Inr Value: {{selectedObservation.valueQuantity.value}}<br>
-      dose: {{dose}}<br>
-      review period: {{reviewPeriod}}<br>
-      target Inr: {{targetInr}}
     </v-layout>
 
     <v-layout row class="purple darken-1 white--text text-xs-center">
