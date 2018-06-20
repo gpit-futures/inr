@@ -50,6 +50,15 @@ export default new Vuex.Store({
     [mutators.SET_PATIENT_CONTEXT] (state, patient) {
       state.patientContext = patient
     },
+    [mutators.SET_PATIENT_CONTEXT_ENDED] (state, patient) {
+      state.patient = null
+      state.patientContext = null
+      state.treatmentPlans = []
+      state.selectedPlan = null
+      state.selectedObservation = null
+      state.observations = []
+      router.push({name: 'LandingPage'})
+    },
     [mutators.SET_TREATMENT_PLAN] (state, treatmentPlans) {
       state.treatmentPlans = treatmentPlans
     },
