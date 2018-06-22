@@ -85,6 +85,7 @@ export async function createTreatmentPlan(patient, encounter, targetINR, dosingM
     })
     .catch((error) => {
       console.error(error)
+      window.Bridge.sendWarningToFrame("Error: You do not have permission to create a treatment plan")
       json = null
     })
   return json

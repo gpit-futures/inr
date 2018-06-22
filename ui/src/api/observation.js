@@ -121,6 +121,7 @@ export async function createObservation(patient, selectedPlan, patientContext, t
         })
         .catch((error) => {
             console.error(error)
+            window.Bridge.sendWarningToFrame("Error: You do not have permission to create a observation")
             json = null
         })
     return json
