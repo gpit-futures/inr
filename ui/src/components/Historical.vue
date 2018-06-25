@@ -4,7 +4,7 @@
       <span class="title">Historical Treatment</span>
     </v-layout>
 
-    <v-layout row class="purple darken-1 white--text text-xs-center">
+    <v-layout row class="purple darken-4 white--text text-xs-center">
       <v-flex xs2 class="py-1">Date</v-flex>
       <v-flex xs2 class="py-1">INR</v-flex>
       <v-flex xs2 class="py-1">Dose (mg/day)</v-flex>

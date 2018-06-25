@@ -121,7 +121,7 @@ export async function createObservation(patient, selectedPlan, patientContext, t
         })
         .catch((error) => {
             console.error(error)
-            window.Bridge.sendWarningToFrame("Error: You do not have permission to create a observation")
+            window.Bridge.sendWarningToFrame("Error: You do not have permission to create an INR reading")
             json = null
         })
     return json

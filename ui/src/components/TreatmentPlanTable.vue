@@ -1,10 +1,10 @@
 <template>
   <div>
     <v-card v-if="selectedPlan" class="mb-3">
-      <v-layout row v-if="observations === null" class="purple darken-1 white--text text-xs-center">
+      <v-layout row v-if="observations === null" class="purple darken-4 white--text text-xs-center">
         <v-flex xs12 py-1>This patient has no recorded treatments since the treatment plan's start date: {{selectedPlan.period.start | date}}</v-flex>
       </v-layout>
-      <v-layout row v-else class="purple darken-1 white--text text-xs-center">
+      <v-layout row v-else class="purple darken-4 white--text text-xs-center">
         <v-flex xs2 class="py-1">Test Date</v-flex>
         <v-flex xs2 class="py-1">INR</v-flex>
         <v-flex xs3 class="py-1">Dose (mg/day)</v-flex>

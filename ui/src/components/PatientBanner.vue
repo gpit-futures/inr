@@ -15,7 +15,7 @@
     </v-layout>
     <transition name="reveal">
       <div v-if="patient" key="patient">
-        <v-layout row class="purple darken-1 white--text pl-2 pr-2 pt-3 pb-3 justify-space-between">
+        <v-layout row class="purple darken-4 white--text pl-2 pr-2 pt-3 pb-3 justify-space-between">
           <span class="body-1">{{patientName}}</span>
           <div>
             <span class="caption">Born:</span>
