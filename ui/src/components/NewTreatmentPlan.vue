@@ -73,7 +73,7 @@
              label="Testing Method"
              :rules="requiredRules"></v-select>
            <v-layout row justify-end>
-             <v-btn color="primary" @click="savePlan">Save<v-icon right>save</v-icon></v-btn>
+             <v-btn color="primary" @click="savePlan" :disabled="loading">Save<v-icon right>save</v-icon><v-progress-circular v-if="loading" :width="2" indeterminate></v-progress-circular></v-btn>
            </v-layout>
         </v-flex>
       </v-layout>
@@ -114,7 +114,8 @@ export default {
       requiredRules: [v => !!v || 'Required value'],
       newEncounter: {},
       plan: {},
-      selectedPlanEndMax: null
+      selectedPlanEndMax: null,
+      loading: false
 
     }
   },
@@ -148,7 +149,9 @@ export default {
       if (this.$refs.drugForm.validate()) {
         // create new encounter/careplan
         this.newEncounter = await createEncounter(this.patient, this.planStartDate, this.diagnosis, this.patientContext)
+        this.loading = true
         await createTreatmentPlan(this.patient, this.newEncounter, this.targetINR, this.dosingMethod, this.testingMethod, this.diagnosis, this.planStartDate, this.planEndDate, this.drug, this.patientContext)
+        this.loading = false
         this.$store.commit(mutators.ADD_PLAN_TO_TREATMENT_PLAN, this.patient)
         this.$router.push({name: 'Tests'})
       }

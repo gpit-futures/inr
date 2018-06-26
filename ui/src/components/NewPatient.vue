@@ -79,7 +79,7 @@
           </v-layout>
         </v-form>
         <v-layout row justify-end>
-          <v-btn color="primary" @click.stop="save">Add Patient to INR System</v-btn>
+          <v-btn color="primary" @click.stop="save" :disabled="loading">Add Patient to INR System<v-progress-circular v-if="loading" :width="2" indeterminate></v-progress-circular></v-btn>
         </v-layout>
       </v-tab-item>
     </v-tabs>
@@ -132,7 +132,8 @@ export default {
       contactTelephone: null,
       contactMobile: null,
       contactEmail: null,
-      requiredRules: [v => !!v || 'Required value']
+      requiredRules: [v => !!v || 'Required value'],
+      loading: false
     }
   },
   methods: {
@@ -144,7 +145,9 @@ export default {
     async save () {
       if (this.$refs.form.validate()) {
         let patient = this.patientContext
+        this.loading = true
         await createPatient(patient)
+        this.loading = false
         this.$store.commit(mutators.SET_PATIENT, patient)
         this.$router.push({name: 'NewPlan'})
       }
