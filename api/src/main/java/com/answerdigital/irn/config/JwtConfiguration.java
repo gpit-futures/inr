@@ -15,19 +15,17 @@ import org.springframework.util.FileCopyUtils;
 
 @Configuration
 public class JwtConfiguration {
-	
-    @Autowired
-    JwtAccessTokenConverter jwtAccessTokenConverter;
 
     @Bean
     @Qualifier("tokenStore")
     public TokenStore tokenStore() {
-        return new JwtTokenStore(jwtAccessTokenConverter);
+        return new JwtTokenStore(jwtAccessTokenConverter());
     }
 
     @Bean
-    protected JwtAccessTokenConverter jwtTokenEnhancer() {
+    protected JwtAccessTokenConverter jwtAccessTokenConverter() {
         JwtAccessTokenConverter converter =  new JwtAccessTokenConverter();
+        converter.setAccessTokenConverter(new CustomAccessTokenConverter());
         Resource resource = new ClassPathResource("public.cert");
         String publicKey = null;
         try {
