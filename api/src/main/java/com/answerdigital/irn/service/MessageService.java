@@ -38,7 +38,7 @@ public abstract class MessageService<DTO extends ResponseDTO> {
 		String odsId = decodedDetails.get("odsId");
 		
 		MessageProperties properties = new MessageProperties();
-		properties.setHeader("odsId", odsId);
+		properties.setHeader("originOds", odsId);
 		
 		Message message = MessageBuilder.withBody(objectMapper.writeValueAsBytes(dto)).andProperties(properties).build();
 		
