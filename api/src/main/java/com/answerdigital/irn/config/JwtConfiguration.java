@@ -2,7 +2,6 @@ package com.answerdigital.irn.config;
 
 import java.io.IOException;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -28,12 +27,15 @@ public class JwtConfiguration {
         converter.setAccessTokenConverter(new CustomAccessTokenConverter());
         Resource resource = new ClassPathResource("public.cert");
         String publicKey = null;
+        
         try {
             publicKey = new String(FileCopyUtils.copyToByteArray(resource.getInputStream()));
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
+        
         converter.setVerifierKey(publicKey);
+        
         return converter;
     }
 }

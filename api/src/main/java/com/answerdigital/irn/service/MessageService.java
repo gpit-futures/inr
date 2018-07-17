@@ -9,10 +9,7 @@ import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.oauth2.common.OAuth2AccessToken;
-import org.springframework.security.oauth2.provider.OAuth2Authentication;
 import org.springframework.security.oauth2.provider.authentication.OAuth2AuthenticationDetails;
-import org.springframework.security.oauth2.provider.token.TokenStore;
 
 import com.answerdigital.irn.dto.ResponseDTO;
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -24,10 +21,8 @@ public abstract class MessageService<DTO extends ResponseDTO> {
 	private RabbitTemplate rabbitTemplate;
 	
 	@Autowired
-	private TokenStore tokenStore;
-	
-	@Autowired
 	private ObjectMapper objectMapper;
+	
 	@SuppressWarnings("unchecked")
 	public void publishCreateMessage(DTO dto) throws JsonProcessingException {
 		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
@@ -48,13 +43,6 @@ public abstract class MessageService<DTO extends ResponseDTO> {
 	
 	public void publishUpdateMessage(DTO dto) {
 		this.rabbitTemplate.convertAndSend(getExchangeKey(), getUpdateKey(), dto);
-	}
-	
-	// test
-	public Map<String, Object> getExtraInfo(OAuth2Authentication auth) {
-		OAuth2AuthenticationDetails details = (OAuth2AuthenticationDetails) auth.getDetails();
-		OAuth2AccessToken accessToken = tokenStore.readAccessToken(details.getTokenValue());
-		return accessToken.getAdditionalInformation();
 	}
 	
 	protected abstract String getCreateKey();
