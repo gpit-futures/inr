@@ -4,12 +4,12 @@
 ## Developer notes - back end
 ### To set up the INR server in a Java IDE...
 - Ensure [Java 8](http://www.oracle.com/technetwork/java/javase/downloads/index.html), [Git](https://git-scm.com/downloads) and [Maven](https://maven.apache.org/download.cgi) are installed and set-up on your machine (including your Java IDE of choice e.g. Eclipse)
- - Clone the [inr repository](https://github.com/gpit-futures/thick-client.git) using git clone (or your favourite GUI tool) using the URL https://github.com/gpit-futures/inr.git to an appropriate local directory.
+ - Clone the [inr repository](https://github.com/gpit-futures/inr.git) using git clone (or your favourite GUI tool) using the URL https://github.com/gpit-futures/inr.git to an appropriate local directory.
  - Import the project into your IDE as a Maven project.  The pom.xml file containing the build configuration required for import can be found in the local directory created above.
 ### To run via the Java IDE
  - The main class is com.answerdigital.irn.Application.  Simply run this class as a standard Java application.
  ### To run via an executable JAR file
- - In a console, Navigate to the root directory of the thick-client project as defined above (the directory containing the pom.xml file).
+ - In a console, Navigate to the root directory of the inr project as defined above (the directory containing the pom.xml file).
  - Build the project using the 'mvn clean install' command.
  - The JAR file to execute can be found in the /target directory.
 ### Dependencies
