@@ -38,9 +38,10 @@ The password for authenticating access to the message queue.
 #### *.namespace
 The namespace of each unique entity in case identifiers are common between them.
 #### *.created.key
-the routing key (to the message queue) for entity creation events
+The routing key (to the message queue) for entity creation events.
 #### *.updated.key
-the routing key (to the message queue) for entity update events
+The routing key (to the message queue) for entity update events.
 #### *.exchange.key
-the exchange key (to identify the message queue exchange of interest) to bind to before messages can be published or consumed.
+The exchange key (to identify the message queue exchange of interest) to bind to before messages can be published or consumed.
+## Installation notes
 To install the INR module directly simply download the latest version of the [framework](https://github.com/gpit-futures/frame/releases) from Git Hub and login as either user.  
