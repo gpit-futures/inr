@@ -4,6 +4,7 @@ import java.util.Map;
 
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.oauth2.provider.authentication.OAuth2AuthenticationDetails;
@@ -14,6 +15,9 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 
 public abstract class MessageService<DTO extends ResponseDTO> {
 
+	@Value("${application.name}")
+	private String applicationName;
+	
 	@Autowired
 	private RabbitTemplate rabbitTemplate;
 	
@@ -26,7 +30,7 @@ public abstract class MessageService<DTO extends ResponseDTO> {
 		String odsId = details.get("odsId");
 		
 		this.rabbitTemplate.convertAndSend(
-				getExchangeKey(), getCreateKey(), new Message(odsId, odsId, dto));
+				getExchangeKey(), getCreateKey(), new Message(applicationName, odsId, odsId, dto));
 	}
 	
 	public void publishUpdateMessage(DTO dto) {
