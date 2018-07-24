@@ -62,9 +62,6 @@ export async function createTreatmentPlan(patient, encounter, targetINR, dosingM
         "value": "8349583495849308590"
       }
     }],
-    "addresses": [{
-      "display": diagnosis,
-    }],
     "activity": [
       {
         "detail": {
