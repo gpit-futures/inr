@@ -21,6 +21,8 @@
 All configuration for the application can be found in... **{root_directory}/src/main/resources/application.properties**
 Below is a description of each properties function...
 
+#### application.name
+The display name of this module (Temporary. On integration with the buying catalogue this data will be available within the JWT)
 #### server.servlet.contextPath
 The application context following the host/port in the URL.  In this case it is /inr
 #### server.port
