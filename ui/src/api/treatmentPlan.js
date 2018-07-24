@@ -56,7 +56,11 @@ export async function createTreatmentPlan(patient, encounter, targetINR, dosingM
     },
     "author": [{
       "reference": 'Practitioner/1',
-      "display": patientContext.gp.name
+      "display": patientContext.gp.name,
+      "identifier": {
+        "system": "https://fhir.leedsth.nhs.uk/Id/practitioner",
+        "value": "8349583495849308590"
+      }
     }],
     "addresses": [{
       "display": diagnosis,
