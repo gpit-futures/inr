@@ -55,6 +55,7 @@ export async function createTreatmentPlan(patient, encounter, targetINR, dosingM
       "end": ukDateToInternational(planEndDate)
     },
     "author": [{
+      "reference": 'Practitioner/1',
       "display": patientContext.gp.name
     }],
     "addresses": [{
