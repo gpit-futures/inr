@@ -55,10 +55,12 @@ export async function createTreatmentPlan(patient, encounter, targetINR, dosingM
       "end": ukDateToInternational(planEndDate)
     },
     "author": [{
-      "display": patientContext.gp.name
-    }],
-    "addresses": [{
-      "display": diagnosis,
+      "reference": 'Practitioner/1',
+      "display": patientContext.gp.name,
+      "identifier": {
+        "system": "https://fhir.leedsth.nhs.uk/Id/practitioner",
+        "value": "8349583495849308590"
+      }
     }],
     "activity": [
       {

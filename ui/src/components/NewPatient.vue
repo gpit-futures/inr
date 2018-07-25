@@ -170,7 +170,6 @@ export default {
         this.contactTown = this.patientContext.address[0].city
         this.contactPostcode = this.patientContext.address[0].postalCode
         this.contactMobile = this.patientContext.telecom[0].value
-        this.contactEmail = this.patientContext.telecom[1].value
       }
     }
   },
