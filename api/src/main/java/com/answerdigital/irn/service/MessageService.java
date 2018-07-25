@@ -21,20 +21,23 @@ public abstract class MessageService<DTO extends ResponseDTO> {
 	@Autowired
 	private RabbitTemplate rabbitTemplate;
 	
-	@SuppressWarnings("unchecked")
 	public void publishCreateMessage(DTO dto) throws JsonProcessingException {
+		this.rabbitTemplate.convertAndSend(getExchangeKey(), getCreateKey(), createMessage(dto));
+	}
+	
+	public void publishUpdateMessage(DTO dto) {
+		this.rabbitTemplate.convertAndSend(getExchangeKey(), getUpdateKey(), createMessage(dto));
+	}
+
+	@SuppressWarnings("unchecked")
+	private Message createMessage(DTO dto) {
 		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
 		Map<String, String> details =  
 				(Map<String, String>) ((OAuth2AuthenticationDetails) auth.getDetails()).getDecodedDetails();
 		
 		String odsId = details.get("odsId");
 		
-		this.rabbitTemplate.convertAndSend(
-				getExchangeKey(), getCreateKey(), new Message(applicationName, odsId, odsId, dto));
-	}
-	
-	public void publishUpdateMessage(DTO dto) {
-		this.rabbitTemplate.convertAndSend(getExchangeKey(), getUpdateKey(), dto);
+		return new Message(applicationName, odsId, odsId, dto);
 	}
 	
 	protected abstract String getCreateKey();
