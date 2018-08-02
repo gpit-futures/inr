@@ -18,6 +18,7 @@ services:
          - hapi-server
    hapi-server:
       image: gpitfutures/hapi_server:3.4.0
+      # might be good to not expose the HAPI server on production.
       ports:
          - 8080:8080
       volumes:
