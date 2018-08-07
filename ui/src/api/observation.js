@@ -1,6 +1,6 @@
 /* eslint-disable */
 import { HTTP } from '../store/http-common'
-import { ukDateToInternational } from '../utilities'
+import { ukDateToInternational, ukDateTimeToInternational } from '../utilities'
 import store from '../store/store';
 
 export async function getObservation(treatmentPlan) {
@@ -82,7 +82,7 @@ export async function createObservation(patient, selectedPlan, patientContext, t
                 "value": selectedPlan.context.identifier.value
             }
         },
-        "effectiveDateTime": ukDateToInternational(test.testDate),
+        "effectiveDateTime": ukDateTimeToInternational(test.testDate, test.testTime),
         "performer": [
             {
                 "display": patientContext.gp.name

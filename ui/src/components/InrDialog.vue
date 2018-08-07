@@ -13,10 +13,27 @@
                  <v-text-field slot="activator"
                    v-model="testDate"
                    label="Test Date"
+                   prepend-icon="event"
                    readonly>
                  </v-text-field>
                  <v-date-picker :value="testDateFmt" @input="selectedDate" locale="en-GB" scrollable attach>
                  </v-date-picker>
+              </v-menu>
+              <v-menu lazy
+                  ref="timeMenu"
+                 :close-on-content-click="false"
+                 transition="scale-transition"
+                 v-model="testTimeVisible"
+                 :return-value.sync="time"
+                 attach>
+                 <v-text-field slot="activator"
+                   v-model="time"
+                   label="Test Time"
+                   prepend-icon="access_time"
+                   readonly>
+                 </v-text-field>
+                 <v-time-picker v-model="time" @change="$refs.timeMenu.save(time)" scrollable attach>
+                 </v-time-picker>
               </v-menu>
             </v-flex>
           </v-layout>
@@ -71,8 +88,10 @@ export default {
     return {
       show: this.showModal,
       testDate: null,
+      time: null,
       testDateFmt: null,
       testDateVisible: false,
+      testTimeVisible: false,
       testingMethod: null,
       testingMethods: ['PoCT', 'Lab'],
       comments: null,
@@ -86,7 +105,7 @@ export default {
       if (this.$refs.form.validate()) {
         let reviewDays = 14
         let nextTestDate = ukDateAddDays(this.testDate, reviewDays)
-        let record = {testDate: this.testDate, inr: this.inrValue, dose: '5', reviewDays: 14, nextTestDate}
+        let record = {testDate: this.testDate, testTime: this.time, inr: this.inrValue, dose: '5', reviewDays: 14, nextTestDate}
         // caught by addedinr() in parent.
         this.$emit('submit', record)
       }
