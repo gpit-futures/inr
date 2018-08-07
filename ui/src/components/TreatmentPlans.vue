@@ -54,7 +54,6 @@ export default {
     addHistorical () {
       this.addingHistorical = true
     },
-    // change to create observation
     async addHistoricalRecord (record) {
       await createObservation(this.patient, this.selectedPlan, this.patientContext, record)
       this.$store.commit(mutators.SET_OBSERVATIONS, this.selectedPlan)
@@ -66,7 +65,6 @@ export default {
     updateHistorical () {
       this.updatingHistorical = true
     },
-    // change to update observation
     async updateHistoricalRecord (record) {
       await updateObservation(record)
       this.$store.commit(mutators.SET_OBSERVATIONS, this.selectedPlan)
@@ -83,10 +81,8 @@ export default {
     cancelPlan () {
       this.planSuggested = false
     },
-    // change to create observation
     async savePlan () {
       this.planSuggested = false
-      // this.test.id = ++this.lastId
       await createObservation(this.patient, this.selectedPlan, this.patientContext, this.test)
       this.$store.commit(mutators.SET_OBSERVATIONS, this.selectedPlan)
     },

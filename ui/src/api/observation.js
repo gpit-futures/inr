@@ -22,7 +22,6 @@ export async function updateObservation(observation) {
     HTTP.defaults.headers.common['Authorization'] = 'Bearer ' + store.state.token.access_token;
     await HTTP.put('observation', json)
         .then((res) => {
-            console.log(res.data)
         })
         .catch((error) => {
             console.error(error)
@@ -117,7 +116,6 @@ export async function createObservation(patient, selectedPlan, patientContext, t
     HTTP.defaults.headers.common['Authorization'] = 'Bearer ' + store.state.token.access_token;
     await HTTP.post('observation', json)
         .then((res) => {
-            console.log(res.data)
         })
         .catch((error) => {
             console.error(error)

@@ -73,7 +73,6 @@ export default {
     },
     updateHistorical (selectedObservation) {
       this.$store.commit(mutators.SET_SELECTED_OBSERVATION, selectedObservation)
-      console.log(selectedObservation)
       this.$emit('update-historical', selectedObservation)
     },
     strip (value) {

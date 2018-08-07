@@ -22,8 +22,6 @@ export default new Vuex.Store({
     token: null
   },
   mutations: {
-    /* The patient stored in the INR system - get the patient from the INR middleware - if none exists promt user.
-    axios.get('../patient/' + patient.nhsNumber) */
     async [mutators.SET_PATIENT] (state, patient) {
       if (patient) {
         state.patient = await getPatient(patient)

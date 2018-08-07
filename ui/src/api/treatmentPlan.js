@@ -76,6 +76,7 @@ export async function createTreatmentPlan(patient, encounter, targetINR, dosingM
           },
           "status": "in-progress",
           "scheduledString": "test"
+          
         }
       }
     ]
@@ -83,7 +84,6 @@ export async function createTreatmentPlan(patient, encounter, targetINR, dosingM
   HTTP.defaults.headers.common['Authorization'] = 'Bearer ' + store.state.token.access_token;
   await HTTP.post('careplan', json)
     .then((res) => {
-      console.log(res.data)
     })
     .catch((error) => {
       console.error(error)

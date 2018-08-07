@@ -38,7 +38,7 @@ export default {
   name: 'page',
   components: { TreatmentPlans },
   data () {
-    return { // Some mock data to fill the page
+    return {
       activeTab: null
     }
   }

@@ -8,7 +8,6 @@ export async function getEncounter(newEncounter) {
   HTTP.defaults.headers.common['Authorization'] = 'Bearer ' + store.state.token.access_token;
   await HTTP.get('encounter?id=' + newEncounter.identifier[0].value)
     .then((res) => {
-      console.log(res.data)
       json = res.data
     })
     .catch((error) => {
