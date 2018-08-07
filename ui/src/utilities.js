@@ -9,7 +9,7 @@ let ukDateToInternational = (date) => {
 }
 
 let ukDateTimeToInternational = (date, time) => {
-  return moment(date + ' ' + time, 'DD-MMM-YYYY').format('YYYY-MM-DD, hh:mm')
+  return moment(date + ' ' + time, 'DD-MMM-YYYY, hh:mm').format('YYYY-MM-DD, hh:mm')
 }
 
 let ukDateAddDays = (date, days) => {
