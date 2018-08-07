@@ -1,6 +1,12 @@
 # inr
 ## Developers notes - front end
-#### To be completed by Dan
+### To set up the INR front-end...
+- Ensure [Node.js](https://nodejs.org/en/) is installed and set-up on your machine
+- Clone the [inr repository](https://github.com/gpit-futures/inr.git) using git clone (or your favourite GUI tool) using the URL https://github.com/gpit-futures/inr.git to an appropriate local directory.
+- Open your chosen console (Node.js Command Prompt/Git-Bash/etc.).
+- Navigate to {downloaded location/inr/ui} and run the following commands:
+- - npm install
+- - npm run dev - (To start the application locally.)
 ## Developer notes - back end
 ### To set up the INR server in a Java IDE...
 - Ensure [Java 8](http://www.oracle.com/technetwork/java/javase/downloads/index.html), [Git](https://git-scm.com/downloads) and [Maven](https://maven.apache.org/download.cgi) are installed and set-up on your machine (including your Java IDE of choice e.g. Eclipse)
