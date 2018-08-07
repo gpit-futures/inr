@@ -7,6 +7,11 @@
 - Navigate to {downloaded location/inr/ui} and run the following commands:
 - - npm install
 - - npm run dev - (To start the application locally.)
+### Dependencies
+- A working version of the [framework](https://github.com/gpit-futures/frame) to host the INR module
+- A working version of the [core module](https://github.com/gpit-futures/pulse) in order to be able to select a patient context to be used by INR.
+- A working [authentication server](https://github.com/gpit-futures/auth-server) to login to the framework.
+- A working version of the message server for inter module communication. 
 ## Developer notes - back end
 ### To set up the INR server in a Java IDE...
 - Ensure [Java 8](http://www.oracle.com/technetwork/java/javase/downloads/index.html), [Git](https://git-scm.com/downloads) and [Maven](https://maven.apache.org/download.cgi) are installed and set-up on your machine (including your Java IDE of choice e.g. Eclipse)
