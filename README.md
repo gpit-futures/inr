@@ -4,7 +4,7 @@
 - Ensure [Node.js](https://nodejs.org/en/) is installed and set-up on your machine
 - Clone the [inr repository](https://github.com/gpit-futures/inr.git) using git clone (or your favourite GUI tool) using the URL https://github.com/gpit-futures/inr.git to an appropriate local directory.
 - Open your chosen console (Node.js Command Prompt/Git-Bash/etc.).
-- Navigate to {downloaded location/inr/ui} and run the following commands:
+- Navigate to {downloaded location}/inr/ui and run the following commands:
 - - npm install
 - - npm run dev - (To start the application locally.)
 ### Dependencies
