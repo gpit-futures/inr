@@ -5,7 +5,7 @@ services:
         context: ./ui
         dockerfile: Dockerfile
       ports:
-         - 8083:80
+         - 80:80
       networks:
          - inr-network
       depends_on:
@@ -26,7 +26,7 @@ services:
         dockerfile: Dockerfile
       # might be good to not expose the HAPI server on production.
       ports:
-         - 8084:8084
+         - 8080:8080
       volumes:
          - ./data:/var/lib/jetty/target
       networks:
@@ -34,5 +34,4 @@ services:
 
 networks:
    inr-network:
-      external:
-         name: frame_api_network
+      driver: bridge
