@@ -11,7 +11,7 @@
     "build": "node build/build.js"
   },
   "dependencies": {
-    "axios": "^0.18.0",
+    "axios": "^0.21.1",
     "dw-client-connector": "^0.2.0",
     "material-design-icons-iconfont": "^3.0.3",
     "moment": "^2.22.1",
